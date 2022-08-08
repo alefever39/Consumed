@@ -1,24 +1,24 @@
-# README
+# Consumed
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+### Description:
 
-Things you may want to cover:
+This app will help a person keep track of different types of media they have watched, listened to, or read.
 
-* Ruby version
+### User Stories:
 
-* System dependencies
+User will be able to:
 
-* Configuration
+- Signup/Login/Logout
+- Create/Read/Update/Delete a new type of media
+- See a list of all of their media
+- Filter media by tags/name/series/universe/media type/etc.
+- Mark media as read/currently reading/wish to read.
+- Add reviews and take notes.
 
-* Database creation
+### Wireframe Link:
 
-* Database initialization
+https://whimsical.com/consumed-Ar6AX5Sy1pavrjiUqwCFoN
 
-* How to run the test suite
+### Database Schema:
 
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+![database-schema](./database-schema.drawio.svg)
