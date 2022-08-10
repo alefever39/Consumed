@@ -1,11 +1,12 @@
 import { useState, useEffect } from "react";
 import { Switch, Route } from "react-router-dom";
-import NavBar from "./NavBar";
-import Login from "./Login";
-import Signup from "./Signup";
-import { getUser } from "../Slices/userSlice";
+import NavBar from "./NavBar/NavBar";
+import Login from "./UserAuth/Login";
+import Signup from "./UserAuth/Signup";
+import { getUser } from "./Slices/userSlice";
 import { useDispatch } from "react-redux";
 import { useHistory } from "react-router-dom";
+import MediaContainer from "./MediaContainer/MediaContainer";
 
 function App() {
   const dispatch = useDispatch();
@@ -37,6 +38,11 @@ function App() {
           <Signup />
         </Route>
         <Route path="/home">
+          <NavBar>
+            <MediaContainer />
+          </NavBar>
+        </Route>
+        <Route path="/my_media">
           <NavBar></NavBar>
         </Route>
         <Route path="/">

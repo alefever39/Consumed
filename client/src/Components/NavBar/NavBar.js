@@ -1,6 +1,5 @@
 import { useHistory } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { logout } from "../Slices/userSlice";
 import {
   Button,
   IconButton,
@@ -46,20 +45,6 @@ function NavBar({ children }) {
 
   if (!user) {
     history.push("/login");
-  }
-
-  function handleLogout(e) {
-    e.preventDefault();
-    fetch(`/logout`, {
-      method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      credentials: "include",
-    }).then(() => {
-      dispatch(logout());
-      history.push("/login");
-    });
   }
 
   return (

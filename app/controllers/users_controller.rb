@@ -1,5 +1,5 @@
 class UsersController < ApplicationController
-  skip_before_action :authorize, only: %i[show create]
+  skip_before_action :authorize, only: %i[index show create]
 
   ############################### /users
   def index
@@ -21,6 +21,12 @@ class UsersController < ApplicationController
     else
       render json: { errors: ["Confirmation password does not match password"] }
     end
+  end
+
+  ############################### /users/media
+  def media
+    user = User.find_by!(id: session[:user_id])
+    render json: user.media_users
   end
 
   private

@@ -2,7 +2,7 @@ require "faker"
 
 puts "Seeding Users"
 
-20.times do
+5.times do
   first_name = Faker::Name.first_name
   User.create(
     first_name: first_name,
@@ -70,7 +70,7 @@ puts "Seeding Movies"
     rating: 5,
     review: Faker::Lorem.sentence,
     site_consumed: "everywhere",
-    consumed: "Not Consumed",
+    consumed: "not consumed",
     notes: Faker::Lorem.paragraph,
     user_id: user,
     medium_id: medium.id
@@ -109,7 +109,7 @@ puts "Seeding Book Series"
       rating: 5,
       review: Faker::Lorem.sentence,
       site_consumed: "everywhere",
-      consumed: "Not Consumed",
+      consumed: "not consumed",
       notes: Faker::Lorem.paragraph,
       user_id: user,
       medium: medium
@@ -153,7 +153,7 @@ puts "Seeding tv show Seasons"
         rating: 5,
         review: Faker::Lorem.sentence,
         site_consumed: "everywhere",
-        consumed: "Not Consumed",
+        consumed: "not consumed",
         notes: Faker::Lorem.paragraph,
         user_id: user,
         medium: medium
