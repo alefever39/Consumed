@@ -15,7 +15,7 @@ class UsersController < ApplicationController
   ############################### /signup
   def create
     if params[:password_confirmation] == params[:password]
-      user = User.create!(params_hash)
+      user = User.create!(user_params)
       session[:user_id] = user.id
       render json: user, status: :created
     else
