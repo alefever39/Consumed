@@ -9,6 +9,8 @@ Rails.application.routes.draw do
   resources :media_types, only: [:index]
   resources :users, only: [:index]
 
+  get "/users/media", to: "users#media"
+
   #################### User Auth
   get "/me", to: "users#show"
   post "/signup", to: "users#create"

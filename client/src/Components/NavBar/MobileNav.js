@@ -19,10 +19,28 @@ import {
 } from "@chakra-ui/react";
 import { FiMenu, FiBell, FiChevronDown } from "react-icons/fi";
 import { FaUserCircle } from "react-icons/fa";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { useHistory } from "react-router-dom";
+import { logout } from "../Slices/userSlice";
 
 function MobileNav({ onOpen, ...rest }) {
+  const dispatch = useDispatch();
+  const history = useHistory();
   const user = useSelector((state) => state.user.user);
+
+  function handleLogout(e) {
+    e.preventDefault();
+    fetch(`/logout`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+    }).then(() => {
+      dispatch(logout());
+      history.push("/login");
+    });
+  }
 
   return (
     <Flex
@@ -53,7 +71,7 @@ function MobileNav({ onOpen, ...rest }) {
         Logo
       </Text>
 
-      <HStack spacing={{ base: "0", md: "6" }}>
+      <HStack spacing={{ base: "0", md: "10" }}>
         <Breadcrumb separator="|">
           <BreadcrumbItem>
             <BreadcrumbLink as={Link} to="/home" fontSize="l">
@@ -102,12 +120,13 @@ function MobileNav({ onOpen, ...rest }) {
             <MenuList
               bg={useColorModeValue("white", "gray.900")}
               borderColor={useColorModeValue("gray.200", "gray.700")}
+              zIndex={2}
             >
               <MenuItem>Profile</MenuItem>
               <MenuItem>Settings</MenuItem>
               <MenuItem>Billing</MenuItem>
               <MenuDivider />
-              <MenuItem>Sign out</MenuItem>
+              <MenuItem onClick={handleLogout}>Sign out</MenuItem>
             </MenuList>
           </Menu>
         </Flex>
