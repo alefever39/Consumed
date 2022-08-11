@@ -10,6 +10,7 @@ Rails.application.routes.draw do
   resources :users, only: [:index]
 
   get "/users/media", to: "users#media"
+  get "/media/:id/media_series", to: "media#mediaSeries"
 
   #################### User Auth
   get "/me", to: "users#show"

@@ -1,5 +1,5 @@
 class MediaSeasonSerializer < ActiveModel::Serializer
   attributes :id, :number
   has_one :season
-  has_one :medium
+  has_one :series
 end

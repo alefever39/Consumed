@@ -68,7 +68,7 @@ function MobileNav({ onOpen, ...rest }) {
         fontFamily="monospace"
         fontWeight="bold"
       >
-        Logo
+        Consumed
       </Text>
 
       <HStack spacing={{ base: "0", md: "10" }}>
@@ -98,7 +98,10 @@ function MobileNav({ onOpen, ...rest }) {
               _focus={{ boxShadow: "none" }}
             >
               <HStack>
-                <Avatar size={"sm"} src={FaUserCircle} />
+                <Avatar
+                  size={"sm"}
+                  name={user.first_name + " " + user.last_name}
+                />
                 <VStack
                   display={{ base: "none", md: "flex" }}
                   alignItems="flex-start"

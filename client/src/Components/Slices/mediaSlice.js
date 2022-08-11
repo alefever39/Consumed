@@ -43,6 +43,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 /////////////////////////////////////////////// Reducer
 const initialState = {
   media: [],
+  series: {},
   loaded: false,
 };
 
@@ -52,6 +53,9 @@ const mediaSlice = createSlice({
   reducers: {
     getMedia: (state, action) => {
       state.media = action.payload;
+    },
+    getSeriesInfo: (state, action) => {
+      state.series = action.payload;
     },
   },
   // extraReducers: {
@@ -67,7 +71,7 @@ const mediaSlice = createSlice({
   // },
 });
 
-export const { getMedia } = mediaSlice.actions;
+export const { getMedia, getSeriesInfo } = mediaSlice.actions;
 export default mediaSlice.reducer;
 
 // export default function userReducer(state = initialState, action) {
