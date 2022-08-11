@@ -46,7 +46,7 @@ function NavItem({ children, icon, ...rest }) {
         {icon && (
           <Icon
             mr="4"
-            fontSize="16"
+            fontSize="25"
             _groupHover={{
               color: "white",
             }}
