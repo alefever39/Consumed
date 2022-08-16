@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_08_09_161401) do
+ActiveRecord::Schema[7.0].define(version: 2022_08_15_165520) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -30,6 +30,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_08_09_161401) do
     t.string "genre"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "image"
     t.index ["media_type_id"], name: "index_media_on_media_type_id"
   end
 
@@ -77,18 +78,16 @@ ActiveRecord::Schema[7.0].define(version: 2022_08_09_161401) do
     t.integer "number"
     t.text "description"
     t.integer "rating"
-    t.integer "media_quantity"
     t.bigint "series_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "season_exists"
     t.index ["series_id"], name: "index_seasons_on_series_id"
   end
 
   create_table "series", force: :cascade do |t|
     t.string "title"
     t.integer "rating"
-    t.integer "media_quantity"
-    t.integer "season_quantity"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end

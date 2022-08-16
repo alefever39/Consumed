@@ -29,28 +29,13 @@ puts "Seeding Creators"
 
 puts "Seeding Series"
 
-Series.create(title: "none", rating: 0, media_quantity: 0, season_quantity: 0)
+Series.create(title: "none", rating: 0)
 
-Series.create(
-  title: "The Swords of Fate",
-  rating: 5,
-  media_quantity: 0,
-  season_quantity: 0
-)
+Series.create(title: "The Swords of Fate", rating: 5)
 
-Series.create(
-  title: "The Blackest Time of Day",
-  rating: 5,
-  media_quantity: 0,
-  season_quantity: 0
-)
+Series.create(title: "The Blackest Time of Day", rating: 5)
 
-Series.create(
-  title: "The Most Left Right",
-  rating: 5,
-  media_quantity: 0,
-  season_quantity: 0
-)
+Series.create(title: "The Most Left Right", rating: 5)
 
 puts "Seeding Movies"
 
@@ -63,7 +48,9 @@ puts "Seeding Movies"
       global_rating: 5,
       publisher: "none",
       genre: Faker::Book.genre,
-      media_type_id: 2
+      media_type_id: 2,
+      image:
+        "https://assignments.ds106.us/wp-content/uploads/sites/4/2011/12/placeholder.png"
     )
   user = rand(1..20)
   MediaUser.create(
@@ -91,8 +78,8 @@ puts "Seeding Book Series"
         number: i + 1,
         description: Faker::Lorem.sentence,
         rating: 5,
-        media_quantity: 0,
-        series_id: series_id
+        series_id: series_id,
+        season_exists: false
       )
     medium =
       Medium.create(
@@ -102,7 +89,9 @@ puts "Seeding Book Series"
         global_rating: 5,
         publisher: Faker::Book.publisher,
         genre: Faker::Book.genre,
-        media_type_id: 1
+        media_type_id: 1,
+        image:
+          "https://assignments.ds106.us/wp-content/uploads/sites/4/2011/12/placeholder.png"
       )
     user = rand(1..20)
     MediaUser.create(
@@ -112,7 +101,7 @@ puts "Seeding Book Series"
       consumed: "not consumed",
       notes: Faker::Lorem.paragraph,
       user_id: user,
-      medium: medium
+      medium_id: medium.id
     )
     creator = rand(1..5)
     MediaCreator.create(medium: medium, creator_id: creator)
@@ -133,8 +122,8 @@ puts "Seeding tv show Seasons"
         number: i + 1,
         description: Faker::Lorem.sentence,
         rating: 5,
-        media_quantity: 0,
-        series_id: series_id
+        series_id: series_id,
+        season_exists: true
       )
     10.times do |i|
       title = Faker::Adjective.positive + " " + Faker::FunnyName.name
@@ -146,7 +135,9 @@ puts "Seeding tv show Seasons"
           global_rating: 5,
           publisher: "none",
           genre: Faker::Book.genre,
-          media_type_id: 3
+          media_type_id: 3,
+          image:
+            "https://assignments.ds106.us/wp-content/uploads/sites/4/2011/12/placeholder.png"
         )
       user = rand(1..20)
       MediaUser.create(
@@ -156,10 +147,10 @@ puts "Seeding tv show Seasons"
         consumed: "not consumed",
         notes: Faker::Lorem.paragraph,
         user_id: user,
-        medium: medium
+        medium_id: medium.id
       )
-      MediaCreator.create(medium: medium, creator_id: creator)
-      MediaSeason.create(number: i + 1, season: season, medium: medium)
+      MediaCreator.create(medium_id: medium.id, creator_id: creator)
+      MediaSeason.create(number: i + 1, season: season, medium_id: medium.id)
     end
   end
 end

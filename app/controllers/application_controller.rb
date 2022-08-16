@@ -22,6 +22,8 @@ class ApplicationController < ActionController::API
   end
 
   def record_invalid(exception)
+    @records_to_add.map { |record| record.destroy }
+
     render json: {
              errors: exception.record.errors.full_messages
            },
