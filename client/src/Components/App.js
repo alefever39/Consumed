@@ -53,6 +53,11 @@ function App() {
             <MediaForm origin={"create"} />
           </NavBar>
         </Route>
+        <Route path="/search">
+          <NavBar>
+            <MediaForm origin={"search"} />
+          </NavBar>
+        </Route>
         <Route path="/edit">
           <NavBar>
             <MediaForm origin={"edit"} />

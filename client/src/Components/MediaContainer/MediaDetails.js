@@ -328,7 +328,6 @@ function MediaDetails({ media, handleCancelClick }) {
               fontWeight={300}
               fontSize={formatSizeMed()}
               textAlign="center"
-              textTransform={"uppercase"}
             >
               {media.notes}
             </Text>

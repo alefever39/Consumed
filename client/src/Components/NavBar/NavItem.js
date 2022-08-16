@@ -1,29 +1,51 @@
 import { Flex, Icon } from "@chakra-ui/react";
 import { useDispatch, useSelector } from "react-redux";
 import { mediaFilter } from "../Slices/mediaSlice";
+import { setAddType } from "../Slices/pageSlice";
 
 function NavItem({ children, name, icon, ...rest }) {
   const dispatch = useDispatch();
   const filter = useSelector((state) => state.media.filter);
+  const selectedPage = useSelector((state) => state.page.selectedPage);
+  const addType = useSelector((state) => state.page.addType);
 
   function handleFilterChange() {
-    dispatch(mediaFilter(name));
+    if (selectedPage === "create") {
+      dispatch(setAddType(name));
+    } else {
+      dispatch(mediaFilter(name));
+    }
   }
 
+  let mediaColor;
   let bgColor;
+  let iconColor;
   switch (name) {
-    case filter === "all" && "all":
-      bgColor = "gray.400";
+    case "all":
+      mediaColor = "gray.400";
       break;
-    case filter === "book" && "book":
-      bgColor = "red.300";
+    case "book":
+      mediaColor = "red.300";
       break;
-    case filter === "movie" && "movie":
-      bgColor = "blue.300";
+    case "movie":
+      mediaColor = "blue.300";
       break;
-    case filter === "tv show" && "tv show":
-      bgColor = "orange.300";
+    case "tv show":
+      mediaColor = "orange.300";
       break;
+    case "create":
+      mediaColor = "cyan.400";
+      break;
+    case "search":
+      mediaColor = "cyan.400";
+      break;
+  }
+
+  if (filter === name || addType === name) {
+    bgColor = mediaColor;
+    iconColor = "black";
+  } else if (selectedPage !== "create") {
+    iconColor = mediaColor;
   }
 
   return (
@@ -51,8 +73,11 @@ function NavItem({ children, name, icon, ...rest }) {
         <Icon
           mr="4"
           fontSize="25"
+          color={iconColor}
+          borderRadius={"50%"}
           _groupHover={{
             color: "white",
+            bg: "cyan.400",
           }}
           as={icon}
         />
