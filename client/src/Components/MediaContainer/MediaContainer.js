@@ -1,6 +1,12 @@
 import { useDispatch, useSelector } from "react-redux";
-import { Flex, useColorModeValue } from "@chakra-ui/react";
-import { useEffect } from "react";
+import {
+  Flex,
+  useColorModeValue,
+  FormControl,
+  FormLabel,
+  Input,
+} from "@chakra-ui/react";
+import { useEffect, useState } from "react";
 import MediaCard from "./MediaCard";
 import { getMedia } from "../Slices/mediaSlice";
 import { useHistory } from "react-router-dom";
@@ -16,6 +22,8 @@ function MediaContainer({ origin }) {
 
   const media = useSelector((state) => state.media.media);
   const filter = useSelector((state) => state.media.filter);
+  const [search, setSearch] = useState("");
+
   let displayMedia;
 
   useEffect(() => {
@@ -42,6 +50,20 @@ function MediaContainer({ origin }) {
     }
   }
 
+  if (search) {
+    displayMedia = displayMedia.filter((medium) => {
+      console.log(medium);
+      return (
+        medium.medium.title.toLowerCase().includes(search.toLowerCase()) ||
+        medium.consumed.toLowerCase() === search.toLowerCase()
+      );
+    });
+  }
+
+  function handleInputChange(e) {
+    setSearch(e.target.value);
+  }
+
   return (
     <Flex
       bg={useColorModeValue("white", "gray.900")}
@@ -53,6 +75,19 @@ function MediaContainer({ origin }) {
       wrap="wrap"
       justify="space-around"
     >
+      <FormControl id="seach">
+        <Flex justify="center" align={"center"}>
+          <FormLabel>Search</FormLabel>
+          <Input
+            type="input"
+            id="title"
+            name="title"
+            value={search}
+            onChange={handleInputChange}
+            w="50%"
+          />
+        </Flex>
+      </FormControl>
       {displayMedia ? (
         displayMedia.map((medium) => {
           return <MediaCard key={medium.id} media={medium} />;

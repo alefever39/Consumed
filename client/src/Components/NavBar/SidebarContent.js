@@ -9,31 +9,51 @@ import {
 import { IoIosBook } from "react-icons/io";
 import { CgCamera, CgTv } from "react-icons/cg";
 import { FaGlobeAmericas } from "react-icons/fa";
+import { GoPencil, GoSearch } from "react-icons/go";
 import NavItem from "./NavItem";
+import { useDispatch, useSelector } from "react-redux";
 
 export default function SidebarContent({ onClose, ...rest }) {
-  const linkItems = [
-    {
-      name: "all",
-      displayAs: "All",
-      icon: FaGlobeAmericas,
-    },
-    {
-      name: "book",
-      displayAs: "Books",
-      icon: IoIosBook,
-    },
-    {
-      name: "movie",
-      displayAs: "Movies",
-      icon: CgCamera,
-    },
-    {
-      name: "tv show",
-      displayAs: "TV Shows",
-      icon: CgTv,
-    },
-  ];
+  const selectedPage = useSelector((state) => state.page.selectedPage);
+
+  let linkItems;
+  if (selectedPage === "create") {
+    linkItems = [
+      {
+        name: "create",
+        displayAs: "Create",
+        icon: GoPencil,
+      },
+      // {
+      //   name: "search",
+      //   displayAs: "Search",
+      //   icon: GoSearch,
+      // },
+    ];
+  } else {
+    linkItems = [
+      {
+        name: "all",
+        displayAs: "All",
+        icon: FaGlobeAmericas,
+      },
+      {
+        name: "book",
+        displayAs: "Books",
+        icon: IoIosBook,
+      },
+      {
+        name: "movie",
+        displayAs: "Movies",
+        icon: CgCamera,
+      },
+      {
+        name: "tv show",
+        displayAs: "TV Shows",
+        icon: CgTv,
+      },
+    ];
+  }
 
   return (
     <Box

@@ -22,6 +22,7 @@ import { FiMenu, FiChevronDown } from "react-icons/fi";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { logout } from "../Slices/userSlice";
+import { setSelectedPage } from "../Slices/pageSlice";
 
 function MobileNav({ onOpen, ...rest }) {
   const dispatch = useDispatch();
@@ -43,6 +44,7 @@ function MobileNav({ onOpen, ...rest }) {
   }
 
   function handleLinkClick(e) {
+    dispatch(setSelectedPage(e.target.name));
     history.push(e.target.name);
   }
 
@@ -101,27 +103,27 @@ function MobileNav({ onOpen, ...rest }) {
             <BreadcrumbLink
               as={Link}
               onClick={handleLinkClick}
-              name="my_media"
+              name="create"
               fontSize="l"
             >
-              My Media
+              Add Media
             </BreadcrumbLink>
           </BreadcrumbItem>
           <BreadcrumbItem>
             <BreadcrumbLink
               as={Link}
               onClick={handleLinkClick}
-              name="create"
+              name="my_media"
               fontSize="l"
             >
-              Create Media
+              My Media
             </BreadcrumbLink>
           </BreadcrumbItem>
-          <BreadcrumbItem>
+          {/* <BreadcrumbItem>
             <BreadcrumbLink as={Link} to="/" fontSize="l">
               Series
             </BreadcrumbLink>
-          </BreadcrumbItem>
+          </BreadcrumbItem> */}
         </Breadcrumb>
 
         <Flex display={{ base: "flex", md: "none" }} pr="10px">
@@ -156,13 +158,13 @@ function MobileNav({ onOpen, ...rest }) {
               <MenuItem onClick={handleLinkClick} name="home">
                 Home
               </MenuItem>
+              <MenuItem onClick={handleLinkClick} name="create">
+                Add Media
+              </MenuItem>
               <MenuItem onClick={handleLinkClick} name="my_media">
                 My Media
               </MenuItem>
-              <MenuItem onClick={handleLinkClick} name="create">
-                Create Media
-              </MenuItem>
-              <MenuItem>Series</MenuItem>
+              {/* <MenuItem>Series</MenuItem> */}
             </MenuList>
           </Menu>
         </Flex>
@@ -207,10 +209,10 @@ function MobileNav({ onOpen, ...rest }) {
               borderColor={useColorModeValue("gray.200", "gray.700")}
               zIndex={2}
             >
-              <MenuItem>Profile</MenuItem>
+              {/* <MenuItem>Profile</MenuItem>
               <MenuItem>Settings</MenuItem>
               <MenuItem>Billing</MenuItem>
-              <MenuDivider />
+              <MenuDivider /> */}
               <MenuItem onClick={handleLogout}>Logout</MenuItem>
             </MenuList>
           </Menu>
