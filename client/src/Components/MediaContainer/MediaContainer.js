@@ -1,38 +1,46 @@
-import { useHistory } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  Container,
-  SimpleGrid,
-  Image,
-  Flex,
-  Grid,
-  GridItem,
-  Heading,
-  Text,
-  Stack,
-  StackDivider,
-  Icon,
-  useColorModeValue,
-} from "@chakra-ui/react";
+import { Flex, useColorModeValue } from "@chakra-ui/react";
 import { useEffect } from "react";
 import MediaCard from "./MediaCard";
 import { getMedia } from "../Slices/mediaSlice";
+import { useHistory } from "react-router-dom";
 
-function MediaContainer() {
-  const history = useHistory();
+function MediaContainer({ origin }) {
   const dispatch = useDispatch();
+  const history = useHistory();
+  const user = useSelector((state) => state.user.user);
+
+  if (!user || (user && user.errors)) {
+    history.push("/login");
+  }
+
   const media = useSelector((state) => state.media.media);
+  const filter = useSelector((state) => state.media.filter);
+  let displayMedia;
 
   useEffect(() => {
     fetch(`/users/media`)
       .then((response) => response.json())
       .then((data) => {
-        dispatch(getMedia(data));
+        if (filter === "all") {
+          dispatch(getMedia(data));
+        } else {
+          const filteredData = data.filter(
+            (mediaUser) => mediaUser.media_type.media_type === filter
+          );
+          dispatch(getMedia(filteredData));
+        }
       })
       .catch((error) => window.alert(error));
-  }, []);
+  }, [filter]);
 
-  console.log(media);
+  if (media) {
+    if (origin === "home") {
+      displayMedia = media.filter((medium) => medium.consumed === "consuming");
+    } else {
+      displayMedia = media;
+    }
+  }
 
   return (
     <Flex
@@ -45,9 +53,13 @@ function MediaContainer() {
       wrap="wrap"
       justify="space-around"
     >
-      {media.map((medium) => {
-        return <MediaCard key={medium.id} media={medium} />;
-      })}
+      {displayMedia ? (
+        displayMedia.map((medium) => {
+          return <MediaCard key={medium.id} media={medium} />;
+        })
+      ) : (
+        <p>Loading...</p>
+      )}
     </Flex>
   );
 }

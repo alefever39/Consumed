@@ -1,10 +1,8 @@
 import {
   Button,
   Flex,
-  Spacer,
   FormControl,
   FormLabel,
-  FormHelperText,
   Input,
   Stack,
   Heading,
@@ -12,7 +10,6 @@ import {
   Link,
   Box,
   useColorModeValue,
-  Checkbox,
 } from "@chakra-ui/react";
 import { useState } from "react";
 import { useHistory } from "react-router-dom";
@@ -48,6 +45,7 @@ function Login() {
         if (data.errors) {
           setErrors(data.errors);
         } else {
+          console.log("in the user fetch", data);
           dispatch(getUser(data));
           history.push("/home");
         }
@@ -60,7 +58,7 @@ function Login() {
 
   return (
     <Flex
-      minH={"100vh"}
+      minH={"70vh"}
       align={"center"}
       justify={"center"}
       bg={useColorModeValue("gray.50", "gray.800")}

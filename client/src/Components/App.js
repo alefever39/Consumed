@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { Switch, Route } from "react-router-dom";
 import NavBar from "./NavBar/NavBar";
 import Login from "./UserAuth/Login";
@@ -7,6 +7,7 @@ import { getUser } from "./Slices/userSlice";
 import { useDispatch } from "react-redux";
 import { useHistory } from "react-router-dom";
 import MediaContainer from "./MediaContainer/MediaContainer";
+import MediaForm from "./MediaCreateAndEdit/MediaForm";
 
 function App() {
   const dispatch = useDispatch();
@@ -39,11 +40,23 @@ function App() {
         </Route>
         <Route path="/home">
           <NavBar>
-            <MediaContainer />
+            <MediaContainer origin={"home"} />
           </NavBar>
         </Route>
         <Route path="/my_media">
-          <NavBar></NavBar>
+          <NavBar>
+            <MediaContainer origin={"my_media"} />
+          </NavBar>
+        </Route>
+        <Route path="/create">
+          <NavBar>
+            <MediaForm origin={"create"} />
+          </NavBar>
+        </Route>
+        <Route path="/edit">
+          <NavBar>
+            <MediaForm origin={"edit"} />
+          </NavBar>
         </Route>
         <Route path="/">
           <h1>Loading...</h1>

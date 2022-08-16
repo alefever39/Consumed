@@ -1,24 +1,13 @@
 import {
   Box,
-  chakra,
-  Container,
-  Stack,
   Text,
   Image,
   Flex,
-  VStack,
   Button,
   Heading,
-  SimpleGrid,
-  StackDivider,
   useColorModeValue,
-  VisuallyHidden,
-  List,
-  ListItem,
   Divider,
 } from "@chakra-ui/react";
-import { FaInstagram, FaTwitter, FaYoutube } from "react-icons/fa";
-import { MdLocalShipping } from "react-icons/md";
 import {
   consumedTextColor,
   formatSize3xl,
@@ -29,18 +18,25 @@ import {
   formatSizeMed,
 } from "../HelperFunctions/formattingFunctions";
 import { useDispatch, useSelector } from "react-redux";
-import { getSeriesInfo } from "../Slices/mediaSlice";
+import { getSeriesInfo, editInfo } from "../Slices/mediaSlice";
 import { useEffect } from "react";
 import RatingContainer from "./RatingContainer";
+import { useHistory } from "react-router-dom";
 
 function MediaDetails({ media, handleCancelClick }) {
+  const history = useHistory();
   const dispatch = useDispatch();
   const mediaSeries = useSelector((state) => {
     return state.media.series;
   });
 
+  function handleEditClick() {
+    dispatch(editInfo({ media, mediaSeries }));
+    history.push("/edit");
+  }
+
   useEffect(() => {
-    fetch(`/media/${media.id}/media_series`)
+    fetch(`/media/${media.medium.id}/media_series`)
       .then((response) => response.json())
       .then((data) => {
         console.log(data);
@@ -62,10 +58,8 @@ function MediaDetails({ media, handleCancelClick }) {
         {/* Media Image */}
         <Image
           rounded={"md"}
-          alt={"product image"}
-          src={
-            "https://m.media-amazon.com/images/M/MV5BZjZlZDlkYTktMmU1My00ZDBiLWFlNjEtYTBhNjVhOTM4ZjJjXkEyXkFqcGdeQXVyMTMxODk2OTU@._V1_FMjpg_UX1000_.jpg"
-          }
+          alt={"media image"}
+          src={media.medium.image}
           fit={"contain"}
           align={"center"}
           w={"full"}
@@ -235,6 +229,18 @@ function MediaDetails({ media, handleCancelClick }) {
             Media Type: {media.media_type.media_type}
           </Text>
 
+          {/* Site Consumed */}
+          {media.site_consumed ? (
+            <Text
+              color={"black"}
+              fontWeight={300}
+              fontSize={formatSizeMed()}
+              textAlign="center"
+            >
+              Where To Consume: {media.site_consumed}
+            </Text>
+          ) : null}
+
           <br />
           <Divider />
           <br />
@@ -246,6 +252,7 @@ function MediaDetails({ media, handleCancelClick }) {
             w="80%"
             alignSelf={"center"}
             direction="column"
+            overflow={"auto"}
           >
             <Box as={"header"}>
               <Heading
@@ -333,6 +340,7 @@ function MediaDetails({ media, handleCancelClick }) {
           <Flex>
             <Button
               rounded={"md"}
+              onClick={handleEditClick}
               mt={8}
               size={formatSizeLg()}
               bg={"cyan.400"}

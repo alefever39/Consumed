@@ -1,3 +1,3 @@
 class SeriesSerializer < ActiveModel::Serializer
-  attributes :id, :title, :rating, :media_quantity, :season_quantity
+  attributes :id, :title, :rating
 end

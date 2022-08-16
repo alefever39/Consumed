@@ -16,9 +16,9 @@ import {
   Breadcrumb,
   BreadcrumbLink,
   BreadcrumbItem,
+  Image,
 } from "@chakra-ui/react";
-import { FiMenu, FiBell, FiChevronDown } from "react-icons/fi";
-import { FaUserCircle } from "react-icons/fa";
+import { FiMenu, FiChevronDown } from "react-icons/fi";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { logout } from "../Slices/userSlice";
@@ -42,6 +42,10 @@ function MobileNav({ onOpen, ...rest }) {
     });
   }
 
+  function handleLinkClick(e) {
+    history.push(e.target.name);
+  }
+
   return (
     <Flex
       ml={{ base: 0, md: 60 }}
@@ -61,29 +65,107 @@ function MobileNav({ onOpen, ...rest }) {
         aria-label="open menu"
         icon={<FiMenu />}
       />
-
       <Text
         display={{ base: "flex", md: "none" }}
         fontSize="2xl"
         fontFamily="monospace"
         fontWeight="bold"
+        textAlign={"justify"}
       >
-        Consumed
+        <Image
+          h="24px"
+          w="auto"
+          src="/ConsumedLogo_tight_background.png"
+          padding={"none"}
+          margin="none"
+          display={"inline"}
+          position="relative"
+          top="4px"
+        />
+        onsumed
       </Text>
 
       <HStack spacing={{ base: "0", md: "10" }}>
-        <Breadcrumb separator="|">
+        <Breadcrumb separator="|" display={{ base: "none", md: "flex" }}>
           <BreadcrumbItem>
-            <BreadcrumbLink as={Link} to="/home" fontSize="l">
+            <BreadcrumbLink
+              as={Link}
+              onClick={handleLinkClick}
+              name="home"
+              fontSize="l"
+            >
               Home
             </BreadcrumbLink>
           </BreadcrumbItem>
           <BreadcrumbItem>
+            <BreadcrumbLink
+              as={Link}
+              onClick={handleLinkClick}
+              name="my_media"
+              fontSize="l"
+            >
+              My Media
+            </BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbItem>
+            <BreadcrumbLink
+              as={Link}
+              onClick={handleLinkClick}
+              name="create"
+              fontSize="l"
+            >
+              Create Media
+            </BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbItem>
             <BreadcrumbLink as={Link} to="/" fontSize="l">
-              All Media
+              Series
             </BreadcrumbLink>
           </BreadcrumbItem>
         </Breadcrumb>
+
+        <Flex display={{ base: "flex", md: "none" }} pr="10px">
+          <Menu display={{ base: "flex", md: "none" }}>
+            <MenuButton
+              py={2}
+              transition="all 0.3s"
+              _focus={{ boxShadow: "none" }}
+            >
+              <HStack>
+                <VStack
+                  display={{ base: "flex", md: "none" }}
+                  alignItems="flex-start"
+                  spacing="1px"
+                  ml="2"
+                >
+                  <Text fontSize="sm">Options</Text>
+                  {/* <Text fontSize="xs" color="gray.600">
+                      Admin
+                    </Text> */}
+                </VStack>
+                <Box display={{ base: "flex", md: "none" }}>
+                  <FiChevronDown />
+                </Box>
+              </HStack>
+            </MenuButton>
+            <MenuList
+              bg={useColorModeValue("white", "gray.900")}
+              borderColor={useColorModeValue("gray.200", "gray.700")}
+              zIndex={2}
+            >
+              <MenuItem onClick={handleLinkClick} name="home">
+                Home
+              </MenuItem>
+              <MenuItem onClick={handleLinkClick} name="my_media">
+                My Media
+              </MenuItem>
+              <MenuItem onClick={handleLinkClick} name="create">
+                Create Media
+              </MenuItem>
+              <MenuItem>Series</MenuItem>
+            </MenuList>
+          </Menu>
+        </Flex>
         {/* <IconButton
           size="lg"
           variant="ghost"
@@ -100,7 +182,7 @@ function MobileNav({ onOpen, ...rest }) {
               <HStack>
                 <Avatar
                   size={"sm"}
-                  name={user.first_name + " " + user.last_name}
+                  name={user ? user.first_name + " " + user.last_name : null}
                 />
                 <VStack
                   display={{ base: "none", md: "flex" }}
@@ -109,7 +191,7 @@ function MobileNav({ onOpen, ...rest }) {
                   ml="2"
                 >
                   <Text fontSize="sm">
-                    {user.first_name} {user.last_name}
+                    {user ? user.first_name + " " + user.last_name : null}
                   </Text>
                   {/* <Text fontSize="xs" color="gray.600">
                     Admin
@@ -129,7 +211,7 @@ function MobileNav({ onOpen, ...rest }) {
               <MenuItem>Settings</MenuItem>
               <MenuItem>Billing</MenuItem>
               <MenuDivider />
-              <MenuItem onClick={handleLogout}>Sign out</MenuItem>
+              <MenuItem onClick={handleLogout}>Logout</MenuItem>
             </MenuList>
           </Menu>
         </Flex>

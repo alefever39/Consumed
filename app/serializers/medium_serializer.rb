@@ -5,6 +5,7 @@ class MediumSerializer < ActiveModel::Serializer
              :description,
              :global_rating,
              :publisher,
-             :genre
+             :genre,
+             :image
   has_one :media_type
 end

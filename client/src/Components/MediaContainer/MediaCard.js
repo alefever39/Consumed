@@ -9,24 +9,34 @@ import {
   Modal,
   ModalOverlay,
   ModalContent,
-  ModalHeader,
-  ModalFooter,
   ModalBody,
-  ModalCloseButton,
   useDisclosure,
-  Button,
+  Flex,
 } from "@chakra-ui/react";
 import MediaDetails from "./MediaDetails";
 import { consumedTextColor } from "../HelperFunctions/formattingFunctions";
-
-const IMAGE =
-  "https://www.firstbenefits.org/wp-content/uploads/2017/10/placeholder.png";
 
 function MediaCard({ media }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   function handleCancelClick() {
     onClose();
+  }
+
+  let bgColor;
+  switch (media.media_type.media_type) {
+    case "all":
+      bgColor = "gray.400";
+      break;
+    case "book":
+      bgColor = "red.300";
+      break;
+    case "movie":
+      bgColor = "blue.300";
+      break;
+    case "tv show":
+      bgColor = "orange.300";
+      break;
   }
 
   return (
@@ -37,7 +47,7 @@ function MediaCard({ media }) {
           p={6}
           maxW={"330px"}
           w={"full"}
-          bg={useColorModeValue("purple.100", "gray")}
+          bg={useColorModeValue(bgColor, "gray")}
           boxShadow={"xl"}
           rounded={"lg"}
           pos={"relative"}
@@ -56,14 +66,15 @@ function MediaCard({ media }) {
               pos: "absolute",
               top: 5,
               left: 0,
-              backgroundColor: `gray.600`,
-              // backgroundImage: `url(${IMAGE})`,
+              backgroundColor: `gray.500`,
+              opacity: 0.3,
               filter: "blur(15px)",
               zIndex: -1,
             }}
             _groupHover={{
               _after: {
                 filter: "blur(25px)",
+                opacity: 0.7,
               },
             }}
           >
@@ -71,8 +82,8 @@ function MediaCard({ media }) {
               rounded={"lg"}
               height={230}
               width={282}
-              objectFit={"cover"}
-              src={IMAGE}
+              objectFit={"contain"}
+              src={media.medium.image}
             />
           </Box>
           <Stack pt={10} align={"center"}>
@@ -87,14 +98,22 @@ function MediaCard({ media }) {
                 $199
               </Text> */}
             </Stack>
-            <Text
-              fontWeight={600}
-              color={consumedTextColor(media.consumed)}
-              fontSize={"l"}
-              textTransform={"uppercase"}
+            <Flex
+              bg={useColorModeValue("white", "gray")}
+              _after={{
+                opacity: 0.3,
+                filter: "blur(25px)",
+              }}
             >
-              {media.consumed}
-            </Text>
+              <Text
+                fontWeight={600}
+                color={consumedTextColor(media.consumed)}
+                fontSize={"l"}
+                textTransform={"uppercase"}
+              >
+                {media.consumed}
+              </Text>
+            </Flex>
           </Stack>
         </Box>
       </Center>

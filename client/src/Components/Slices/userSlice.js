@@ -41,7 +41,9 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 // }
 
 /////////////////////////////////////////////// Reducer
-const initialState = {};
+const initialState = {
+  user: {},
+};
 
 const userSlice = createSlice({
   name: "user",

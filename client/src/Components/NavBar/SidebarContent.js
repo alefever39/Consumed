@@ -1,26 +1,10 @@
 import {
-  Button,
-  IconButton,
-  Avatar,
   Box,
   CloseButton,
   Flex,
-  HStack,
-  VStack,
-  Icon,
   useColorModeValue,
-  Link,
-  Drawer,
-  DrawerContent,
+  Image,
   Text,
-  useDisclosure,
-  BoxProps,
-  FlexProps,
-  Menu,
-  MenuButton,
-  MenuDivider,
-  MenuItem,
-  MenuList,
 } from "@chakra-ui/react";
 import { IoIosBook } from "react-icons/io";
 import { CgCamera, CgTv } from "react-icons/cg";
@@ -30,19 +14,23 @@ import NavItem from "./NavItem";
 export default function SidebarContent({ onClose, ...rest }) {
   const linkItems = [
     {
-      name: "All",
+      name: "all",
+      displayAs: "All",
       icon: FaGlobeAmericas,
     },
     {
-      name: "Books",
+      name: "book",
+      displayAs: "Books",
       icon: IoIosBook,
     },
     {
-      name: "Movies",
+      name: "movie",
+      displayAs: "Movies",
       icon: CgCamera,
     },
     {
-      name: "TV shows",
+      name: "tv show",
+      displayAs: "TV Shows",
       icon: CgTv,
     },
   ];
@@ -59,14 +47,34 @@ export default function SidebarContent({ onClose, ...rest }) {
       {...rest}
     >
       <Flex h="20" alignItems="center" mx="8" justifyContent="space-between">
-        <Text fontSize="2xl" fontFamily="monospace" fontWeight="bold">
-          Consumed
+        <Text
+          fontSize="2xl"
+          fontFamily="monospace"
+          fontWeight="bold"
+          textAlign={"justify"}
+        >
+          <Image
+            h="24px"
+            w="auto"
+            src="/ConsumedLogo_tight_background.png"
+            padding={"none"}
+            margin="none"
+            display={"inline"}
+            position="relative"
+            top="3px"
+          />
+          onsumed
         </Text>
         <CloseButton display={{ base: "flex", md: "none" }} onClick={onClose} />
       </Flex>
       {linkItems.map((link) => (
-        <NavItem key={link.name} icon={link.icon} fontSize="18">
-          {link.name}
+        <NavItem
+          key={link.name}
+          name={link.name}
+          icon={link.icon}
+          fontSize="18"
+        >
+          {link.displayAs}
         </NavItem>
       ))}
     </Box>
