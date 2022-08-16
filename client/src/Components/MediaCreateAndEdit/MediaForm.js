@@ -139,6 +139,7 @@ function MediaForm({ origin }) {
       series_exists: String(seriesExists),
       season_exists: String(seasonExists),
     };
+    console.log(sendForm);
     fetch("/media", {
       method: "POST",
       headers: {
@@ -157,7 +158,6 @@ function MediaForm({ origin }) {
       });
   }
 
-  console.log(editInfo);
   //////////////////// Handle edit save
   function handleAddMediaEditSubmit(e) {
     e.preventDefault();
