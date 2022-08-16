@@ -68,7 +68,7 @@ class MediaController < ApplicationController
     end
 
     ######### if there is a series, create series if it doesn't exist
-    if media_params[:series_exists]
+    if (media_params[:series_exists] == "true")
       existing_series = Series.find_by(title: media_params[:series_title])
       if existing_series
         series = existing_series
@@ -91,25 +91,25 @@ class MediaController < ApplicationController
           )
         @records_to_add = [season] + @records_to_add
       end
-    end
 
-    ######### create media_season
-    existing_media_season =
-      MediaSeason.find_by(
-        number: media_params[:media_number],
-        season: season,
-        medium: medium
-      )
-    if existing_media_season
-      media_season = existing_media_season
-    else
-      media_season =
-        MediaSeason.create!(
+      ######### create media_season
+      existing_media_season =
+        MediaSeason.find_by(
           number: media_params[:media_number],
           season: season,
           medium: medium
         )
-      @records_to_add = [media_season] + @records_to_add
+      if existing_media_season
+        media_season = existing_media_season
+      else
+        media_season =
+          MediaSeason.create!(
+            number: media_params[:media_number],
+            season: season,
+            medium: medium
+          )
+        @records_to_add = [media_season] + @records_to_add
+      end
     end
 
     @records_to_add = []
