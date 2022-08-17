@@ -28,6 +28,7 @@ function MobileNav({ onOpen, ...rest }) {
   const dispatch = useDispatch();
   const history = useHistory();
   const user = useSelector((state) => state.user.user);
+  const addType = useSelector((state) => state.page.addType);
 
   function handleLogout(e) {
     e.preventDefault();
@@ -45,14 +46,18 @@ function MobileNav({ onOpen, ...rest }) {
 
   function handleLinkClick(e) {
     dispatch(setSelectedPage(e.target.name));
-    history.push(e.target.name);
+    if (e.target.name === "create") {
+      history.push(`/${addType}`);
+    } else {
+      history.push(e.target.name);
+    }
   }
 
   return (
     <Flex
       ml={{ base: 0, md: 60 }}
       px={{ base: 4, md: 4 }}
-      height="20"
+      height="10vh"
       alignItems="center"
       bg={useColorModeValue("white", "gray.900")}
       borderBottomWidth="1px"

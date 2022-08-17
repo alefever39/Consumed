@@ -19,19 +19,24 @@ class MediaController < ApplicationController
     release_date =
       "#{media_params[:year]}-#{media_params[:month].to_s.rjust(2, "0")}-#{media_params[:date].to_s.rjust(2, "0")}"
 
-    ######### create media
-    medium =
-      Medium.create!(
-        {
-          title: media_params[:title],
-          description: media_params[:description],
-          release_date: release_date,
-          media_type: media_type,
-          image: media_params[:image]
-        }
-      )
+    ######### create media if it doesn't exist
+    media_exists = Medium.find_by(title: media_params[:title])
+    if media_exists
+      medium = media_exists
+    else
+      medium =
+        Medium.create!(
+          {
+            title: media_params[:title],
+            description: media_params[:description],
+            release_date: release_date,
+            media_type: media_type,
+            image: media_params[:image]
+          }
+        )
 
-    @records_to_add = [medium] + @records_to_add
+      @records_to_add = [medium] + @records_to_add
+    end
 
     ######### create media_user
     media_user =

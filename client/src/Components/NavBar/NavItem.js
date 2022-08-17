@@ -2,16 +2,20 @@ import { Flex, Icon } from "@chakra-ui/react";
 import { useDispatch, useSelector } from "react-redux";
 import { mediaFilter } from "../Slices/mediaSlice";
 import { setAddType } from "../Slices/pageSlice";
+import { useHistory } from "react-router-dom";
 
 function NavItem({ children, name, icon, ...rest }) {
   const dispatch = useDispatch();
+  const history = useHistory();
+
   const filter = useSelector((state) => state.media.filter);
   const selectedPage = useSelector((state) => state.page.selectedPage);
   const addType = useSelector((state) => state.page.addType);
 
-  function handleFilterChange() {
+  function handleNavItemClick() {
     if (selectedPage === "create") {
       dispatch(setAddType(name));
+      history.push(`/${name}`);
     } else {
       dispatch(mediaFilter(name));
     }
@@ -66,7 +70,7 @@ function NavItem({ children, name, icon, ...rest }) {
         bg: "cyan.400",
         color: "white",
       }}
-      onClick={handleFilterChange}
+      onClick={handleNavItemClick}
       {...rest}
     >
       {icon && (

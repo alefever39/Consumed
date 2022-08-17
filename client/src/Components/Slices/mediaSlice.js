@@ -15,6 +15,12 @@ const mediaSlice = createSlice({
     getMedia: (state, action) => {
       state.media = action.payload;
     },
+    deleteMedia: (state, action) => {
+      console.log("in delete media", state.media);
+      state.media = state.media.filter(
+        (medium) => medium.id !== action.payload
+      );
+    },
     getSeriesInfo: (state, action) => {
       state.series = action.payload;
     },
@@ -27,6 +33,6 @@ const mediaSlice = createSlice({
   },
 });
 
-export const { getMedia, getSeriesInfo, editInfo, mediaFilter } =
+export const { getMedia, getSeriesInfo, editInfo, mediaFilter, deleteMedia } =
   mediaSlice.actions;
 export default mediaSlice.reducer;

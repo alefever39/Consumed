@@ -18,7 +18,7 @@ import { getUser } from "../Slices/userSlice";
 import CustomNumberInput from "./CustomNumberInput";
 import { buildDateOptionsSelector } from "../HelperFunctions/mediaFormFunctions";
 
-function MediaForm({ origin }) {
+function MediaSearchForm({ origin }) {
   const date = new Date();
   const editInfo = useSelector((state) => {
     return state.media.editInfo;
@@ -217,7 +217,7 @@ function MediaForm({ origin }) {
             Edit "{editInfo.media.medium.title}"
           </Heading>
         ) : (
-          <Heading fontSize={"4xl"}>Add a new piece of media!</Heading>
+          <Heading fontSize={"4xl"}>Search for new media!</Heading>
         )}
       </Stack>
       <Stack spacing={4}>
@@ -543,4 +543,4 @@ function MediaForm({ origin }) {
   );
 }
 
-export default MediaForm;
+export default MediaSearchForm;

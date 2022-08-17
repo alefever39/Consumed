@@ -41,7 +41,7 @@ function MediaCard({ media }) {
 
   return (
     <>
-      <Center py={12} onClick={onOpen}>
+      <Center py={12} onClick={onOpen} _hover={{ cursor: "pointer" }}>
         <Box
           role={"group"}
           p={6}
@@ -90,20 +90,11 @@ function MediaCard({ media }) {
             <Heading fontSize={"2xl"} fontFamily={"body"} fontWeight={800}>
               {media.medium.title}
             </Heading>
-            <Stack direction={"row"} align={"center"}>
-              {/* <Text fontWeight={500} fontSize={"xl"}>
-                {media.medium.genre}
-              </Text> */}
-              {/* <Text textDecoration={"line-through"} color={"gray.600"}>
-                $199
-              </Text> */}
-            </Stack>
             <Flex
-              bg={useColorModeValue("white", "gray")}
-              _after={{
-                opacity: 0.3,
-                filter: "blur(25px)",
-              }}
+              bgGradient={`radial(white 10%, transparent)`}
+              borderRadius="50%"
+              w="55%"
+              justify={"center"}
             >
               <Text
                 fontWeight={600}
@@ -118,7 +109,7 @@ function MediaCard({ media }) {
         </Box>
       </Center>
 
-      <Modal isOpen={isOpen} onClose={onClose} size="6xl">
+      <Modal isCentered isOpen={isOpen} onClose={onClose} size="6xl">
         <ModalOverlay />
         <ModalContent margin="5">
           <ModalBody padding="0">
