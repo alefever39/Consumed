@@ -1,9 +1,40 @@
+require "fuzzystringmatch"
+
 class MediaController < ApplicationController
   skip_before_action :authorize, only: [:create]
 
   ################################################################################################### get /index
   def index
-    render json: Medium.all
+    if (params[:search])
+      jarow = FuzzyStringMatch::JaroWinkler.create(:native)
+      user = User.find_by(id: session[:user_id])
+
+      all_media = Medium.all
+
+      media =
+        all_media.select do |medium|
+          media_user_exists = MediaUser.find_by(user: user, medium: medium)
+          if media_user_exists
+            false
+          else
+            comparison =
+              jarow.getDistance(medium.title.downcase, params[:search].downcase)
+            comparison >= 0.6
+          end
+        end
+
+      sorted_media =
+        media.sort do |a, b|
+          jarow.getDistance(b.title.downcase, params[:search].downcase) <=>
+            jarow.getDistance(a.title.downcase, params[:search].downcase)
+        end
+
+      send_media = sorted_media.first(10)
+
+      render json: send_media, each_serializer: UserUnspecificMediumSerializer
+    else
+      render json: Medium.all
+    end
   end
 
   ################################################################################################### post /media
@@ -277,6 +308,11 @@ class MediaController < ApplicationController
     media = Medium.find_by!(id: params[:id])
     media_season = MediaSeason.find_by(medium_id: media.id)
     render json: media_season
+  end
+
+  ################################################################################################### get /media?search=:query
+  def search
+    byebug
   end
 
   private

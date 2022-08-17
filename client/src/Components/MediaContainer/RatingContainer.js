@@ -8,7 +8,7 @@ function RatingContainer({ size, rating }) {
     for (let i = 1; i <= 5; i++) {
       ratingIcons.push(
         <Icon
-          mr="4"
+          mr="1"
           fontSize={size}
           _groupHover={{
             color: "white",
@@ -23,7 +23,7 @@ function RatingContainer({ size, rating }) {
       if (i <= rating) {
         ratingIcons.push(
           <Icon
-            mr="4"
+            mr="1"
             fontSize={size}
             _groupHover={{
               color: "white",
@@ -35,7 +35,7 @@ function RatingContainer({ size, rating }) {
       } else {
         ratingIcons.push(
           <Icon
-            mr="4"
+            mr="1"
             fontSize={size}
             _groupHover={{
               color: "white",
@@ -49,7 +49,7 @@ function RatingContainer({ size, rating }) {
   }
 
   return (
-    <Flex pl="5px" align={"center"}>
+    <Flex pl={{ base: "0", md: "2px" }} align={"center"}>
       {ratingIcons}
     </Flex>
   );

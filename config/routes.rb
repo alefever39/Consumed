@@ -1,5 +1,5 @@
 Rails.application.routes.draw do
-  resources :media_users, only: %i[index destroy]
+  resources :media_users, only: %i[index create destroy]
   resources :media_creators, only: [:index]
   resources :media_seasons, only: [:index]
   resources :seasons, only: [:index]
@@ -11,6 +11,7 @@ Rails.application.routes.draw do
 
   get "/users/media", to: "users#media"
   get "/media/:id/media_series", to: "media#mediaSeries"
+  # get "/media?search=:query", to: "media#search"
 
   #################### User Auth
   get "/me", to: "users#show"
