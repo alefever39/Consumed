@@ -25,47 +25,30 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { getSeriesInfo, editInfo, deleteMedia } from "../Slices/mediaSlice";
 import { useEffect } from "react";
-import RatingContainer from "./RatingContainer";
+import RatingContainer from "../MediaContainer/RatingContainer";
 import { useHistory } from "react-router-dom";
 
-function MediaDetails({ media, handleCancelClick }) {
-  const {
-    isOpen: isDeleteOpen,
-    onOpen: onDeleteOpen,
-    onClose: onDeleteClose,
-  } = useDisclosure();
+function SimplifiedMediaDetails({ media, handleCancelClick }) {
   const history = useHistory();
   const dispatch = useDispatch();
   const mediaSeries = useSelector((state) => {
     return state.media.series;
   });
 
-  function handleEditClick() {
-    dispatch(editInfo({ media, mediaSeries }));
-    history.push("/edit");
-  }
-
-  function handleDeleteButtonClick() {
-    onDeleteOpen();
-  }
-
-  function handleCancelDeleteClick() {
-    onDeleteClose();
-  }
-
-  function handleConfirmDeleteClick() {
-    fetch(`/media_users/${media.id}`, {
-      method: "DELETE",
+  function handleAddMediaClick() {
+    fetch(`/media_users`, {
+      method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-    }).then(() => {
-      dispatch(deleteMedia(media.id));
-    });
+      body: JSON.stringify({ id: media.id }),
+    })
+      .then((response) => response.json())
+      .then((data) => history.push("/my_media"));
   }
 
   useEffect(() => {
-    fetch(`/media/${media.medium.id}/media_series`)
+    fetch(`/media/${media.id}/media_series`)
       .then((response) => response.json())
       .then((data) => {
         console.log(data);
@@ -85,7 +68,7 @@ function MediaDetails({ media, handleCancelClick }) {
         <Image
           rounded={"md"}
           alt={"media image"}
-          src={media.medium.image}
+          src={media.image}
           fit={"contain"}
           align={"center"}
           w={"full"}
@@ -95,7 +78,7 @@ function MediaDetails({ media, handleCancelClick }) {
           pb="10px"
         />
 
-        {/* Global and User Ratings */}
+        {/* Global Ratings */}
         <Flex direction={"column"} align="flex-end">
           <Flex direction={{ base: "column", md: "row" }}>
             <Text
@@ -109,48 +92,14 @@ function MediaDetails({ media, handleCancelClick }) {
             </Text>
             <RatingContainer
               size={formatSizeMed()}
-              rating={media.medium.global_rating}
+              rating={media.global_rating}
             />
           </Flex>
-          <Flex direction={{ base: "column", md: "row" }}>
-            <Text
-              color={"black"}
-              fontWeight={300}
-              fontSize={formatSizeMed()}
-              textAlign="center"
-              textTransform={"uppercase"}
-            >
-              Your Rating:
-            </Text>
-            <RatingContainer size={formatSizeMed()} rating={media.rating} />
-          </Flex>
-        </Flex>
-
-        <Divider pt="10px" />
-
-        {/* User Review */}
-        <Flex pt="10px" direction={"column"} overflow="auto">
-          <Text
-            color={"black"}
-            fontWeight={500}
-            fontSize={formatSizeMed()}
-            textAlign="center"
-          >
-            Your Review
-          </Text>
-          <Text
-            color={"black"}
-            fontWeight={300}
-            fontSize={formatSizeMed()}
-            textAlign="center"
-          >
-            {media.review}
-          </Text>
         </Flex>
       </Flex>
 
       {/*//////////////// Right Colum ////////////////*/}
-      <Flex w="65%" h={"100%"} direction="column" align="space-around">
+      <Flex w="65%" h={"100%"} direction="column" align="space-around" pl="3vw">
         {/* Top Div */}
         <Flex direction="column" h="55%" align="space-around">
           {/* Top Right Div */}
@@ -166,17 +115,6 @@ function MediaDetails({ media, handleCancelClick }) {
             >
               ({media.media_type.media_type})
             </Text>
-
-            {/* Consumed Status */}
-            <Text
-              color={consumedTextColor(media.consumed)}
-              fontWeight={500}
-              fontSize={formatSizeLg()}
-              textAlign="center"
-              textTransform={"uppercase"}
-            >
-              {media.consumed}
-            </Text>
           </Flex>
 
           {/* Header */}
@@ -188,7 +126,7 @@ function MediaDetails({ media, handleCancelClick }) {
               textAlign="center"
               pb="5px"
             >
-              {media.medium.title}
+              {media.title}
             </Heading>
           </Flex>
 
@@ -247,7 +185,7 @@ function MediaDetails({ media, handleCancelClick }) {
                 <Text
                   color={"black"}
                   fontWeight={300}
-                  fontSize={formatSizeLg()}
+                  fontSize={formatSizeMed()}
                   textDecoration="underline"
                   pr="5px"
                 >
@@ -258,9 +196,9 @@ function MediaDetails({ media, handleCancelClick }) {
                 <Text
                   color={"black"}
                   fontWeight={300}
-                  fontSize={formatSizeLg()}
+                  fontSize={formatSizeMed()}
                 >
-                  {media.medium.description}
+                  {media.description}
                 </Text>
               </Flex>
             </Flex>
@@ -271,7 +209,7 @@ function MediaDetails({ media, handleCancelClick }) {
                 <Text
                   color={"black"}
                   fontWeight={300}
-                  fontSize={formatSizeLg()}
+                  fontSize={formatSizeMed()}
                   textDecoration="underline"
                   pr="5px"
                 >
@@ -282,7 +220,7 @@ function MediaDetails({ media, handleCancelClick }) {
                 <Text
                   color={"black"}
                   fontWeight={300}
-                  fontSize={formatSizeLg()}
+                  fontSize={formatSizeMed()}
                 >
                   {creators}
                 </Text>
@@ -290,14 +228,13 @@ function MediaDetails({ media, handleCancelClick }) {
             </Flex>
 
             {/* Publisher */}
-            {media.medium.publisher !== "none" &&
-            media.medium.publisher !== null ? (
+            {media.publisher !== "none" && media.publisher !== null ? (
               <Flex pt="5px" direction={{ base: "column", md: "row" }}>
                 <Flex w={{ base: "100%", md: "25%" }}>
                   <Text
                     color={"black"}
                     fontWeight={300}
-                    fontSize={formatSizeLg()}
+                    fontSize={formatSizeMed()}
                     textDecoration="underline"
                     pr="5px"
                   >
@@ -308,9 +245,9 @@ function MediaDetails({ media, handleCancelClick }) {
                   <Text
                     color={"black"}
                     fontWeight={300}
-                    fontSize={formatSizeLg()}
+                    fontSize={formatSizeMed()}
                   >
-                    {media.medium.publisher}
+                    {media.publisher}
                   </Text>
                 </Flex>
               </Flex>
@@ -318,13 +255,13 @@ function MediaDetails({ media, handleCancelClick }) {
 
             {/* Release Date */}
             <Flex pt="5px" direction={{ base: "column", md: "row" }}>
-              {media.medium.release_date.slice(4) !== "-00-00" ? (
+              {media.release_date.slice(4) !== "-00-00" ? (
                 <>
                   <Flex w={{ base: "100%", md: "25%" }}>
                     <Text
                       color={"black"}
                       fontWeight={300}
-                      fontSize={formatSizeLg()}
+                      fontSize={formatSizeMed()}
                       textDecoration="underline"
                       pr="5px"
                     >
@@ -335,9 +272,9 @@ function MediaDetails({ media, handleCancelClick }) {
                     <Text
                       color={"black"}
                       fontWeight={300}
-                      fontSize={formatSizeLg()}
+                      fontSize={formatSizeMed()}
                     >
-                      {media.medium.release_date}
+                      {media.release_date}
                     </Text>
                   </Flex>
                 </>
@@ -347,7 +284,7 @@ function MediaDetails({ media, handleCancelClick }) {
                     <Text
                       color={"black"}
                       fontWeight={300}
-                      fontSize={formatSizeLg()}
+                      fontSize={formatSizeMed()}
                       textDecoration="underline"
                       pr="5px"
                     >
@@ -358,96 +295,23 @@ function MediaDetails({ media, handleCancelClick }) {
                     <Text
                       color={"black"}
                       fontWeight={300}
-                      fontSize={formatSizeLg()}
+                      fontSize={formatSizeMed()}
                     >
-                      {media.medium.release_date.slice(0, 4)}
+                      {media.release_date.slice(0, 4)}
                     </Text>
                   </Flex>
                 </>
               )}
             </Flex>
-
-            {/* Site Consumed */}
-            <Flex direction={{ base: "column", md: "row" }}>
-              {media.site_consumed ? (
-                <>
-                  <Flex w={{ base: "100%", md: "25%" }}>
-                    <Text
-                      color={"black"}
-                      fontWeight={300}
-                      fontSize={formatSizeLg()}
-                      textDecoration="underline"
-                      pr="5px"
-                    >
-                      Located:
-                    </Text>
-                  </Flex>
-                  <Flex w={{ base: "100%", md: "75%" }}>
-                    <Text
-                      color={"black"}
-                      fontWeight={300}
-                      fontSize={formatSizeLg()}
-                    >
-                      {media.site_consumed}
-                    </Text>
-                  </Flex>
-                </>
-              ) : null}
-            </Flex>
-          </Flex>
-        </Flex>
-
-        <br />
-        <Divider />
-        <br />
-
-        {/* Middle Div */}
-        {/* Notes */}
-        <Flex h="25%" direction="column">
-          <Flex overflow={"auto"} direction={"column"}>
-            <Heading
-              lineHeight={1.1}
-              fontWeight={600}
-              fontSize={formatSize2xl()}
-              textAlign="center"
-              pb="10px"
-            >
-              Notes
-            </Heading>
-            <Text
-              color={"black"}
-              fontWeight={300}
-              fontSize={formatSizeMed()}
-              textAlign="center"
-            >
-              {media.notes}
-            </Text>
           </Flex>
         </Flex>
 
         {/* Buttons */}
         <Flex alignSelf={"flex-end"}>
-          <Flex>
-            <Button
-              rounded={"md"}
-              onClick={handleDeleteButtonClick}
-              mt={4}
-              size={formatSizeLg()}
-              bg={"red.800"}
-              color={useColorModeValue("white", "gray.900")}
-              textTransform={"uppercase"}
-              _hover={{
-                transform: "translateY(2px)",
-                boxShadow: "lg",
-              }}
-            >
-              Delete
-            </Button>
-          </Flex>
           <Flex pl="10px">
             <Button
               rounded={"md"}
-              onClick={handleEditClick}
+              onClick={handleAddMediaClick}
               mt={4}
               size={formatSizeLg()}
               bg={"cyan.400"}
@@ -458,7 +322,7 @@ function MediaDetails({ media, handleCancelClick }) {
                 boxShadow: "lg",
               }}
             >
-              Edit
+              Add Media
             </Button>
           </Flex>
           <Flex pl="10px">
@@ -479,69 +343,9 @@ function MediaDetails({ media, handleCancelClick }) {
             </Button>
           </Flex>
         </Flex>
-
-        {/* confirm delete modal */}
-        <Modal
-          isCentered
-          isOpen={isDeleteOpen}
-          onClose={onDeleteClose}
-          size="sm"
-        >
-          <ModalOverlay />
-          <ModalContent margin="5">
-            <ModalBody padding="0">
-              <Heading
-                lineHeight={1.1}
-                fontWeight={600}
-                fontSize={formatSize3xl()}
-                textAlign="center"
-                pb="20px"
-                pt="5px"
-              >
-                Are you sure?
-              </Heading>
-              <Flex justify={"space-around"} pb="10px">
-                <Flex>
-                  <Button
-                    rounded={"md"}
-                    onClick={handleConfirmDeleteClick}
-                    mt={4}
-                    size={formatSizeLg()}
-                    bg={"red.800"}
-                    color={useColorModeValue("white", "gray.900")}
-                    textTransform={"uppercase"}
-                    _hover={{
-                      transform: "translateY(2px)",
-                      boxShadow: "lg",
-                    }}
-                  >
-                    Delete
-                  </Button>
-                </Flex>
-                <Flex pl="10px">
-                  <Button
-                    rounded={"md"}
-                    onClick={handleCancelDeleteClick}
-                    mt={4}
-                    size={formatSizeLg()}
-                    bg={"red.400"}
-                    color={useColorModeValue("white", "gray.900")}
-                    textTransform={"uppercase"}
-                    _hover={{
-                      transform: "translateY(2px)",
-                      boxShadow: "lg",
-                    }}
-                  >
-                    Cancel
-                  </Button>
-                </Flex>
-              </Flex>
-            </ModalBody>
-          </ModalContent>
-        </Modal>
       </Flex>
     </Flex>
   );
 }
 
-export default MediaDetails;
+export default SimplifiedMediaDetails;
