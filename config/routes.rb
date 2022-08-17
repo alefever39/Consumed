@@ -1,5 +1,5 @@
 Rails.application.routes.draw do
-  resources :media_users, only: [:index]
+  resources :media_users, only: %i[index destroy]
   resources :media_creators, only: [:index]
   resources :media_seasons, only: [:index]
   resources :seasons, only: [:index]

@@ -24,11 +24,11 @@ export default function SidebarContent({ onClose, ...rest }) {
         displayAs: "Create",
         icon: GoPencil,
       },
-      // {
-      //   name: "search",
-      //   displayAs: "Search",
-      //   icon: GoSearch,
-      // },
+      {
+        name: "search",
+        displayAs: "Search",
+        icon: GoSearch,
+      },
     ];
   } else {
     linkItems = [

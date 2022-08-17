@@ -8,6 +8,7 @@ import { useDispatch } from "react-redux";
 import { useHistory } from "react-router-dom";
 import MediaContainer from "./MediaContainer/MediaContainer";
 import MediaForm from "./MediaCreateAndEdit/MediaForm";
+import MediaSearchForm from "./MediaCreateAndEdit/MediaSearchForm";
 
 function App() {
   const dispatch = useDispatch();
@@ -55,7 +56,7 @@ function App() {
         </Route>
         <Route path="/search">
           <NavBar>
-            <MediaForm origin={"search"} />
+            <MediaSearchForm />
           </NavBar>
         </Route>
         <Route path="/edit">
