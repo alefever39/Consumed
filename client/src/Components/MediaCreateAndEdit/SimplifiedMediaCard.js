@@ -15,6 +15,7 @@ import {
 } from "@chakra-ui/react";
 import SimplifiedMediaDetails from "./SimplifiedMediaDetails";
 import { consumedTextColor } from "../HelperFunctions/formattingFunctions";
+import { useSelector } from "react-redux";
 
 function SimplifiedMediaCard({ media }) {
   const {
@@ -22,6 +23,12 @@ function SimplifiedMediaCard({ media }) {
     onOpen: onDetailsOpen,
     onClose: onDetailsClose,
   } = useDisclosure();
+
+  const defaultImageUrl = useSelector((state) => {
+    return state.media.defaultImageUrl;
+  });
+
+  console.log(!!media.image);
 
   function handleCancelClick() {
     onDetailsClose();
@@ -87,7 +94,7 @@ function SimplifiedMediaCard({ media }) {
               height={230}
               width={282}
               objectFit={"contain"}
-              src={media.image}
+              src={media.image !== "" ? media.image : defaultImageUrl}
             />
           </Box>
           <Stack pt={10} align={"center"}>

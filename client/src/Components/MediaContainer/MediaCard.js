@@ -15,9 +15,16 @@ import {
 } from "@chakra-ui/react";
 import MediaDetails from "./MediaDetails";
 import { consumedTextColor } from "../HelperFunctions/formattingFunctions";
+import { useSelector } from "react-redux";
+import { useRef } from "react";
 
 function MediaCard({ media }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const initialRef = useRef();
+
+  const defaultImageUrl = useSelector((state) => {
+    return state.media.defaultImageUrl;
+  });
 
   function handleCancelClick() {
     onClose();
@@ -83,7 +90,7 @@ function MediaCard({ media }) {
               height={230}
               width={282}
               objectFit={"contain"}
-              src={media.medium.image}
+              src={media.medium.image ? media.medium.image : defaultImageUrl}
             />
           </Box>
           <Stack pt={10} align={"center"}>
@@ -109,11 +116,21 @@ function MediaCard({ media }) {
         </Box>
       </Center>
 
-      <Modal isCentered isOpen={isOpen} onClose={onClose} size="6xl">
+      <Modal
+        isCentered
+        isOpen={isOpen}
+        onClose={onClose}
+        size="6xl"
+        initialFocusRef={initialRef}
+      >
         <ModalOverlay />
         <ModalContent margin="5">
           <ModalBody padding="0">
-            <MediaDetails media={media} handleCancelClick={handleCancelClick} />
+            <MediaDetails
+              initialRef={initialRef}
+              media={media}
+              handleCancelClick={handleCancelClick}
+            />
           </ModalBody>
         </ModalContent>
       </Modal>

@@ -16,13 +16,23 @@ import { useHistory } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { getUser } from "../Slices/userSlice";
 import CustomNumberInput from "./CustomNumberInput";
+import { setSelectedPage } from "../Slices/pageSlice";
 import { buildDateOptionsSelector } from "../HelperFunctions/mediaFormFunctions";
 
 function MediaForm({ origin }) {
+  const history = useHistory();
+  const dispatch = useDispatch();
   const date = new Date();
   const editInfo = useSelector((state) => {
     return state.media.editInfo;
   });
+  const user = useSelector((state) => {
+    return state.user.user;
+  });
+
+  if (!user) {
+    history.push("/login");
+  }
 
   let initialFormData;
   let initialExistState = {
@@ -30,17 +40,13 @@ function MediaForm({ origin }) {
     season: false,
   };
   if (origin === "edit") {
+    if (!editInfo.media) {
+      history.push("/login");
+    }
     const release_date_array = editInfo.media.medium.release_date.split("-");
     const creator = editInfo.media.creators
       .map((creator) => creator.name)
       .join(", ");
-
-    if (editInfo.mediaSeries.series.title) {
-      initialExistState.series = true;
-      if (editInfo.mediaSeries.season.season_exists) {
-        initialExistState.season = true;
-      }
-    }
 
     initialFormData = {
       title: editInfo.media.medium.title,
@@ -53,13 +59,20 @@ function MediaForm({ origin }) {
       description: editInfo.media.medium.description,
       rating: editInfo.media.rating,
       review: editInfo.media.review,
-      series_title: editInfo.mediaSeries.series.title,
-      season_number: editInfo.mediaSeries.season.number,
-      media_number: editInfo.mediaSeries.number,
       notes: editInfo.media.notes,
       site_consumed: editInfo.media.site_consumed,
       consumed: editInfo.media.consumed,
     };
+
+    if (!!editInfo.mediaSeries && editInfo.mediaSeries.series.title) {
+      initialExistState.series = true;
+      initialFormData.series_title = editInfo.mediaSeries.series.title;
+      initialFormData.media_number = editInfo.mediaSeries.number;
+      initialFormData.season_number = editInfo.mediaSeries.season.number;
+      if (editInfo.mediaSeries.season.season_exists) {
+        initialExistState.season = true;
+      }
+    }
   } else {
     initialExistState = {
       series: false,
@@ -89,8 +102,6 @@ function MediaForm({ origin }) {
   const [errors, setErrors] = useState([]);
   const [seriesExists, setSeriesExists] = useState(initialExistState.series);
   const [seasonExists, setSeasonExists] = useState(initialExistState.season);
-  const history = useHistory();
-  const dispatch = useDispatch();
 
   //////////////////// Handle Input Change
   function handleInputChange(e) {
@@ -136,8 +147,8 @@ function MediaForm({ origin }) {
     e.preventDefault();
     const sendForm = {
       ...formData,
-      series_exists: String(seriesExists),
-      season_exists: String(seasonExists),
+      series_exists: seriesExists,
+      season_exists: seasonExists,
     };
     console.log(sendForm);
     fetch("/media", {
@@ -153,6 +164,7 @@ function MediaForm({ origin }) {
         if (data.errors) {
           setErrors(data.errors);
         } else {
+          dispatch(setSelectedPage("my_media"));
           history.push("/my_media");
         }
       });
@@ -166,10 +178,12 @@ function MediaForm({ origin }) {
       .map((creator) => creator.id)
       .join(", ");
 
+    console.log(seasonExists);
+
     const sendForm = {
       ...formData,
-      series_exists: String(seriesExists),
-      season_exists: String(seasonExists),
+      series_exists: seriesExists,
+      season_exists: seasonExists,
       media_user_id: editInfo.media.id,
       creator_ids: creator_ids,
       media_type_id: editInfo.media.media_type.id,
@@ -190,6 +204,7 @@ function MediaForm({ origin }) {
         if (data.errors) {
           setErrors(data.errors);
         } else {
+          dispatch(setSelectedPage("my_media"));
           history.push("/my_media");
         }
       });

@@ -11,27 +11,41 @@ class MediaController < ApplicationController
 
       all_media = Medium.all
 
-      media =
-        all_media.select do |medium|
-          media_user_exists = MediaUser.find_by(user: user, medium: medium)
-          if media_user_exists
-            false
-          else
-            comparison =
-              jarow.getDistance(medium.title.downcase, params[:search].downcase)
-            comparison >= 0.6
+      if params[:search] == ""
+        media =
+          all_media.select do |medium|
+            !MediaUser.find_by(user: user, medium: medium)
           end
-        end
 
-      sorted_media =
-        media.sort do |a, b|
-          jarow.getDistance(b.title.downcase, params[:search].downcase) <=>
-            jarow.getDistance(a.title.downcase, params[:search].downcase)
-        end
+        send_media = media.sample(10)
 
-      send_media = sorted_media.first(10)
+        render json: send_media, each_serializer: UserUnspecificMediumSerializer
+      else
+        media =
+          all_media.select do |medium|
+            media_user_exists = MediaUser.find_by(user: user, medium: medium)
+            if media_user_exists
+              false
+            else
+              comparison =
+                jarow.getDistance(
+                  medium.title.downcase,
+                  params[:search].downcase
+                )
+              comparison >= 0.6
+            end
+          end
 
-      render json: send_media, each_serializer: UserUnspecificMediumSerializer
+        sorted_media =
+          media.sort do |a, b|
+            jarow.getDistance(b.title.downcase, params[:search].downcase) <=>
+              jarow.getDistance(a.title.downcase, params[:search].downcase)
+          end
+
+        send_media = sorted_media.first(10)
+
+        render json: send_media, each_serializer: UserUnspecificMediumSerializer
+      end
     else
       render json: Medium.all
     end
@@ -104,7 +118,7 @@ class MediaController < ApplicationController
     end
 
     ######### if there is a series, create series if it doesn't exist
-    if (media_params[:series_exists] == "true")
+    if (media_params[:series_exists])
       existing_series = Series.find_by(title: media_params[:series_title])
       if existing_series
         series = existing_series
@@ -252,7 +266,10 @@ class MediaController < ApplicationController
     elsif media_params[:series_exists] && orig_media_season
       orig_media_season.update!(number: media_params[:media_number])
       orig_series.update!(title: media_params[:series_title])
-      orig_season.update!(number: media_params[:season_number])
+      orig_season.update!(
+        number: media_params[:season_number],
+        season_exists: media_params[:season_exists]
+      )
 
       ######### create media_season/series/season if series exists and orig_media does not exist as necessary
     elsif media_params[:series_exists] && !orig_media_season

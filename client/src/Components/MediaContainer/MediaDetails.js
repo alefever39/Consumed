@@ -24,11 +24,11 @@ import {
 } from "../HelperFunctions/formattingFunctions";
 import { useDispatch, useSelector } from "react-redux";
 import { getSeriesInfo, editInfo, deleteMedia } from "../Slices/mediaSlice";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import RatingContainer from "./RatingContainer";
 import { useHistory } from "react-router-dom";
 
-function MediaDetails({ media, handleCancelClick }) {
+function MediaDetails({ media, handleCancelClick, initialRef }) {
   const {
     isOpen: isDeleteOpen,
     onOpen: onDeleteOpen,
@@ -36,8 +36,13 @@ function MediaDetails({ media, handleCancelClick }) {
   } = useDisclosure();
   const history = useHistory();
   const dispatch = useDispatch();
+  const deleteRef = useRef();
+
   const mediaSeries = useSelector((state) => {
     return state.media.series;
+  });
+  const defaultImageUrl = useSelector((state) => {
+    return state.media.defaultImageUrl;
   });
 
   function handleEditClick() {
@@ -68,7 +73,6 @@ function MediaDetails({ media, handleCancelClick }) {
     fetch(`/media/${media.medium.id}/media_series`)
       .then((response) => response.json())
       .then((data) => {
-        console.log(data);
         dispatch(getSeriesInfo(data));
       })
       .catch((error) => window.alert(error));
@@ -85,7 +89,7 @@ function MediaDetails({ media, handleCancelClick }) {
         <Image
           rounded={"md"}
           alt={"media image"}
-          src={media.medium.image}
+          src={media.medium.image ? media.medium.image : defaultImageUrl}
           fit={"contain"}
           align={"center"}
           w={"full"}
@@ -463,6 +467,7 @@ function MediaDetails({ media, handleCancelClick }) {
           </Flex>
           <Flex pl="10px">
             <Button
+              ref={initialRef}
               rounded={"md"}
               onClick={handleCancelClick}
               mt={4}
@@ -486,6 +491,7 @@ function MediaDetails({ media, handleCancelClick }) {
           isOpen={isDeleteOpen}
           onClose={onDeleteClose}
           size="sm"
+          initialFocusRef={deleteRef}
         >
           <ModalOverlay />
           <ModalContent margin="5">
@@ -520,6 +526,7 @@ function MediaDetails({ media, handleCancelClick }) {
                 </Flex>
                 <Flex pl="10px">
                   <Button
+                    ref={deleteRef}
                     rounded={"md"}
                     onClick={handleCancelDeleteClick}
                     mt={4}

@@ -5,11 +5,13 @@ import {
   FormControl,
   FormLabel,
   Input,
+  Heading,
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import MediaCard from "./MediaCard";
 import { getMedia } from "../Slices/mediaSlice";
 import { useHistory } from "react-router-dom";
+import { formatSize5xl } from "../HelperFunctions/formattingFunctions";
 
 function MediaContainer({ origin }) {
   const dispatch = useDispatch();
@@ -75,6 +77,17 @@ function MediaContainer({ origin }) {
       wrap="wrap"
       justify="space-around"
     >
+      <Heading
+        lineHeight={1.1}
+        fontWeight={600}
+        fontSize={formatSize5xl()}
+        textAlign="center"
+        pb="5px"
+      >
+        {origin === "home"
+          ? "Here's what your currently consuming"
+          : "All Your Media"}
+      </Heading>
       <FormControl id="seach">
         <Flex justify="center" align={"center"}>
           <FormLabel>Search</FormLabel>
