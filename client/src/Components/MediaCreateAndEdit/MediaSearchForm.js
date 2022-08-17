@@ -43,7 +43,6 @@ function MediaSearchForm({ origin }) {
         if (data.errors) {
           setErrors(data.errors);
         } else {
-          console.log(data);
           setResults(data);
         }
       });

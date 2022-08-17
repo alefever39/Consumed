@@ -24,6 +24,7 @@ import {
 } from "../HelperFunctions/formattingFunctions";
 import { useDispatch, useSelector } from "react-redux";
 import { getSeriesInfo, editInfo, deleteMedia } from "../Slices/mediaSlice";
+import { setSelectedPage } from "../Slices/pageSlice";
 import { useEffect } from "react";
 import RatingContainer from "../MediaContainer/RatingContainer";
 import { useHistory } from "react-router-dom";
@@ -33,6 +34,9 @@ function SimplifiedMediaDetails({ media, handleCancelClick }) {
   const dispatch = useDispatch();
   const mediaSeries = useSelector((state) => {
     return state.media.series;
+  });
+  const defaultImageUrl = useSelector((state) => {
+    return state.media.defaultImageUrl;
   });
 
   function handleAddMediaClick() {
@@ -44,7 +48,10 @@ function SimplifiedMediaDetails({ media, handleCancelClick }) {
       body: JSON.stringify({ id: media.id }),
     })
       .then((response) => response.json())
-      .then((data) => history.push("/my_media"));
+      .then((data) => {
+        dispatch(setSelectedPage("my_media"));
+        history.push("/my_media");
+      });
   }
 
   useEffect(() => {
@@ -68,7 +75,7 @@ function SimplifiedMediaDetails({ media, handleCancelClick }) {
         <Image
           rounded={"md"}
           alt={"media image"}
-          src={media.image}
+          src={media.image !== "" ? media.image : defaultImageUrl}
           fit={"contain"}
           align={"center"}
           w={"full"}

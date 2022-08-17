@@ -6,6 +6,8 @@ const initialState = {
   loaded: false,
   editInfo: {},
   filter: "all",
+  defaultImageUrl:
+    "https://assignments.ds106.us/wp-content/uploads/sites/4/2011/12/placeholder.png",
 };
 
 const mediaSlice = createSlice({
@@ -30,9 +32,18 @@ const mediaSlice = createSlice({
     mediaFilter: (state, action) => {
       state.filter = action.payload;
     },
+    setDefaultImageUrl: (state, action) => {
+      state.defaultImageUrl = action.payload;
+    },
   },
 });
 
-export const { getMedia, getSeriesInfo, editInfo, mediaFilter, deleteMedia } =
-  mediaSlice.actions;
+export const {
+  getMedia,
+  getSeriesInfo,
+  editInfo,
+  mediaFilter,
+  deleteMedia,
+  setDefaultImage,
+} = mediaSlice.actions;
 export default mediaSlice.reducer;
