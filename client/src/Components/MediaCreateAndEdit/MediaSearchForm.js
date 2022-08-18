@@ -48,6 +48,10 @@ function MediaSearchForm({ origin }) {
       });
   }
 
+  function removeMediaFromResults(media_id) {
+    setResults((results) => results.filter((result) => result.id !== media_id));
+  }
+
   return (
     <Flex
       rounded={"lg"}
@@ -105,7 +109,13 @@ function MediaSearchForm({ origin }) {
       <Flex gap={6} padding={6} wrap="wrap" justify="space-around">
         {results ? (
           results.map((medium) => {
-            return <SimplifiedMediaCard key={medium.id} media={medium} />;
+            return (
+              <SimplifiedMediaCard
+                removeMediaFromResults={removeMediaFromResults}
+                key={medium.id}
+                media={medium}
+              />
+            );
           })
         ) : (
           <p>Loading...</p>
