@@ -90,7 +90,11 @@ function MediaCard({ media }) {
               height={230}
               width={282}
               objectFit={"contain"}
-              src={media.medium.image ? media.medium.image : defaultImageUrl}
+              src={
+                media.medium.image && media.image !== null
+                  ? media.medium.image
+                  : defaultImageUrl
+              }
             />
           </Box>
           <Stack pt={10} align={"center"}>

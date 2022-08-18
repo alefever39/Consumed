@@ -49,8 +49,7 @@ puts "Seeding Movies"
       publisher: "none",
       genre: Faker::Book.genre,
       media_type_id: 2,
-      image:
-        "https://assignments.ds106.us/wp-content/uploads/sites/4/2011/12/placeholder.png"
+      image: ""
     )
   user = rand(1..20)
   MediaUser.create(
@@ -90,8 +89,7 @@ puts "Seeding Book Series"
         publisher: Faker::Book.publisher,
         genre: Faker::Book.genre,
         media_type_id: 1,
-        image:
-          "https://assignments.ds106.us/wp-content/uploads/sites/4/2011/12/placeholder.png"
+        image: ""
       )
     user = rand(1..20)
     MediaUser.create(
@@ -136,8 +134,7 @@ puts "Seeding tv show Seasons"
           publisher: "none",
           genre: Faker::Book.genre,
           media_type_id: 3,
-          image:
-            "https://assignments.ds106.us/wp-content/uploads/sites/4/2011/12/placeholder.png"
+          image: ""
         )
       user = rand(1..20)
       MediaUser.create(

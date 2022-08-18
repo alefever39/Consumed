@@ -28,8 +28,6 @@ function SimplifiedMediaCard({ media, removeMediaFromResults }) {
     return state.media.defaultImageUrl;
   });
 
-  console.log(!!media.image);
-
   function handleCancelClick() {
     onDetailsClose();
   }
@@ -94,11 +92,20 @@ function SimplifiedMediaCard({ media, removeMediaFromResults }) {
               height={230}
               width={282}
               objectFit={"contain"}
-              src={media.image !== "" ? media.image : defaultImageUrl}
+              src={
+                media.image !== "" && media.image !== null
+                  ? media.image
+                  : defaultImageUrl
+              }
             />
           </Box>
           <Stack pt={10} align={"center"}>
-            <Heading fontSize={"2xl"} fontFamily={"body"} fontWeight={800}>
+            <Heading
+              fontSize={"2xl"}
+              fontFamily={"body"}
+              fontWeight={800}
+              textAlign="center"
+            >
               {media.title}
             </Heading>
           </Stack>

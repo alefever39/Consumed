@@ -89,7 +89,11 @@ function MediaDetails({ media, handleCancelClick, initialRef }) {
         <Image
           rounded={"md"}
           alt={"media image"}
-          src={media.medium.image ? media.medium.image : defaultImageUrl}
+          src={
+            media.medium.image && media.image !== null
+              ? media.medium.image
+              : defaultImageUrl
+          }
           fit={"contain"}
           align={"center"}
           w={"full"}
