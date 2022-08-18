@@ -183,14 +183,13 @@ class MediaController < ApplicationController
     media_user = MediaUser.find_by!(id: media_params[:media_user_id])
 
     ######### find series
-    orig_series = Series.find_by!(id: media_params[:series_id])
+    orig_series = Series.find_by(id: media_params[:series_id])
 
     ######### find season
-    orig_season = Season.find_by!(id: media_params[:season_id])
+    orig_season = Season.find_by(id: media_params[:season_id])
 
     ######### find media_season
-    orig_media_season =
-      MediaSeason.find_by!(medium: medium, season: orig_season)
+    orig_media_season = MediaSeason.find_by(medium: medium, season: orig_season)
 
     ######### split creator string
     orig_creators_ids_strings =

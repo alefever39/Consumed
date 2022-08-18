@@ -17,7 +17,7 @@ import SimplifiedMediaDetails from "./SimplifiedMediaDetails";
 import { consumedTextColor } from "../HelperFunctions/formattingFunctions";
 import { useSelector } from "react-redux";
 
-function SimplifiedMediaCard({ media }) {
+function SimplifiedMediaCard({ media, removeMediaFromResults }) {
   const {
     isOpen: isDetailsOpen,
     onOpen: onDetailsOpen,
@@ -115,6 +115,7 @@ function SimplifiedMediaCard({ media }) {
         <ModalContent margin="5" h="65vh" overflow={"hidden"}>
           <ModalBody padding="0">
             <SimplifiedMediaDetails
+              removeMediaFromResults={removeMediaFromResults}
               media={media}
               handleCancelClick={handleCancelClick}
             />

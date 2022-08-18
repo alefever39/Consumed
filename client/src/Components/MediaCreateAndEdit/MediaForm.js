@@ -178,7 +178,7 @@ function MediaForm({ origin }) {
       .map((creator) => creator.id)
       .join(", ");
 
-    console.log(seasonExists);
+    console.log(editInfo);
 
     const sendForm = {
       ...formData,
@@ -187,10 +187,17 @@ function MediaForm({ origin }) {
       media_user_id: editInfo.media.id,
       creator_ids: creator_ids,
       media_type_id: editInfo.media.media_type.id,
-      media_series_id: editInfo.mediaSeries.id,
-      series_id: editInfo.mediaSeries.series.id,
-      season_id: editInfo.mediaSeries.season.id,
+      media_series_id: "none",
+      series_id: "none",
+      season_id: "none",
     };
+
+    if (editInfo.mediaSeries) {
+      sendForm.media_series_id = editInfo.mediaSeries.id;
+      sendForm.series_id = editInfo.mediaSeries.series.id;
+      sendForm.season_id = editInfo.mediaSeries.season.id;
+    }
+
     fetch(`/media/${editInfo.media.medium.id}`, {
       method: "PATCH",
       headers: {

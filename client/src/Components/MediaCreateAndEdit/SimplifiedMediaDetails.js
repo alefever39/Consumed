@@ -29,7 +29,11 @@ import { useEffect } from "react";
 import RatingContainer from "../MediaContainer/RatingContainer";
 import { useHistory } from "react-router-dom";
 
-function SimplifiedMediaDetails({ media, handleCancelClick }) {
+function SimplifiedMediaDetails({
+  media,
+  handleCancelClick,
+  removeMediaFromResults,
+}) {
   const history = useHistory();
   const dispatch = useDispatch();
   const mediaSeries = useSelector((state) => {
@@ -49,8 +53,8 @@ function SimplifiedMediaDetails({ media, handleCancelClick }) {
     })
       .then((response) => response.json())
       .then((data) => {
-        dispatch(setSelectedPage("my_media"));
-        history.push("/my_media");
+        removeMediaFromResults(media.id);
+        handleCancelClick();
       });
   }
 
