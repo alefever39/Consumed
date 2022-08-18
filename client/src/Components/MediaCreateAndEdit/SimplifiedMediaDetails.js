@@ -79,7 +79,11 @@ function SimplifiedMediaDetails({
         <Image
           rounded={"md"}
           alt={"media image"}
-          src={media.image !== "" ? media.image : defaultImageUrl}
+          src={
+            media.image !== "" && media.image !== null
+              ? media.image
+              : defaultImageUrl
+          }
           fit={"contain"}
           align={"center"}
           w={"full"}
