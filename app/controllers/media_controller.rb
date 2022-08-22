@@ -3,49 +3,97 @@ require "fuzzystringmatch"
 class MediaController < ApplicationController
   skip_before_action :authorize, only: [:create]
 
-  ################################################################################################### get /index
+  ################################################################################################### get /media
   def index
     if (params[:search])
-      jarow = FuzzyStringMatch::JaroWinkler.create(:native)
-      user = User.find_by(id: session[:user_id])
+      options = JSON.parse(params[:options])
+      send_media = []
 
-      all_media = Medium.all
+      if options["consumed"] == true
+        jarow = FuzzyStringMatch::JaroWinkler.create(:native)
+        user = User.find_by(id: session[:user_id])
 
-      if params[:search] == ""
-        media =
-          all_media.select do |medium|
-            !MediaUser.find_by(user: user, medium: medium)
-          end
+        all_media = Medium.all
 
-        send_media = media.sample(10)
-
-        render json: send_media, each_serializer: UserUnspecificMediumSerializer
-      else
-        media =
-          all_media.select do |medium|
-            media_user_exists = MediaUser.find_by(user: user, medium: medium)
-            if media_user_exists
-              false
-            else
-              comparison =
-                jarow.getDistance(
-                  medium.title.downcase,
-                  params[:search].downcase
-                )
-              comparison >= 0.6
+        if params[:search] == ""
+          media =
+            all_media.select do |medium|
+              !MediaUser.find_by(user: user, medium: medium)
             end
-          end
 
-        sorted_media =
-          media.sort do |a, b|
-            jarow.getDistance(b.title.downcase, params[:search].downcase) <=>
-              jarow.getDistance(a.title.downcase, params[:search].downcase)
-          end
+          consumed_media =
+            media
+              .sample(10)
+              .map do |medium|
+                {
+                  id: medium.attributes["id"],
+                  title: medium.attributes["title"],
+                  image: medium.attributes["image"],
+                  source: "consumed"
+                }
+              end
 
-        send_media = sorted_media.first(10)
+          # render json: send_media,
+          #        each_serializer: UserUnspecificMediumSerializer
+        else
+          media =
+            all_media.select do |medium|
+              media_user_exists = MediaUser.find_by(user: user, medium: medium)
+              if media_user_exists
+                false
+              else
+                comparison =
+                  jarow.getDistance(
+                    medium.title.downcase,
+                    params[:search].downcase
+                  )
+                comparison >= 0.6
+              end
+            end
 
-        render json: send_media, each_serializer: UserUnspecificMediumSerializer
+          sorted_media =
+            media.sort do |a, b|
+              jarow.getDistance(b.title.downcase, params[:search].downcase) <=>
+                jarow.getDistance(a.title.downcase, params[:search].downcase)
+            end
+
+          consumed_media =
+            sorted_media
+              .first(10)
+              .map do |medium|
+                {
+                  id: medium.attributes["id"],
+                  title: medium.attributes["title"],
+                  image: medium.attributes["image"],
+                  source: "consumed"
+                }
+              end
+
+          send_media = send_media + consumed_media
+          # render json: send_media,
+          #        each_serializer: UserUnspecificMediumSerializer
+        end
       end
+
+      if options["imdb"] == true
+        data_as_hash = ExternalApi.imdb(params[:search])
+        imdb_media =
+          data_as_hash["results"]
+            .first(10)
+            .map do |medium|
+              {
+                id: medium["id"],
+                title: medium["title"],
+                image: medium["image"],
+                source: "imdb"
+              }
+            end
+
+        send_media = send_media + imdb_media
+      end
+
+      # byebug
+      render json: send_media, each_serializer: nil
     else
       render json: Medium.all
     end

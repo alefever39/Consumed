@@ -32,21 +32,21 @@ function SimplifiedMediaCard({ media, removeMediaFromResults }) {
     onDetailsClose();
   }
 
-  let bgColor;
-  switch (media.media_type.media_type) {
-    case "all":
-      bgColor = "gray.400";
-      break;
-    case "book":
-      bgColor = "red.300";
-      break;
-    case "movie":
-      bgColor = "blue.300";
-      break;
-    case "tv show":
-      bgColor = "orange.300";
-      break;
-  }
+  let bgColor = "white";
+  // switch (media.media_type.media_type) {
+  //   case "all":
+  //     bgColor = "gray.400";
+  //     break;
+  //   case "book":
+  //     bgColor = "red.300";
+  //     break;
+  //   case "movie":
+  //     bgColor = "blue.300";
+  //     break;
+  //   case "tv show":
+  //     bgColor = "orange.300";
+  //     break;
+  // }
 
   return (
     <>

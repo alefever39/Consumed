@@ -10,6 +10,7 @@ import {
   Select,
   Checkbox,
   FormHelperText,
+  Textarea,
 } from "@chakra-ui/react";
 import { useState } from "react";
 import { useHistory } from "react-router-dom";
@@ -149,6 +150,7 @@ function MediaForm({ origin }) {
       ...formData,
       series_exists: seriesExists,
       season_exists: seasonExists,
+      description: formData.description.split(/\r?\n/).join("\n"),
     };
     console.log(sendForm);
     fetch("/media", {
@@ -190,6 +192,7 @@ function MediaForm({ origin }) {
       media_series_id: "none",
       series_id: "none",
       season_id: "none",
+      description: formData.description.split(/\r?\n/).join("\n"),
     };
 
     if (editInfo.mediaSeries) {
@@ -381,7 +384,7 @@ function MediaForm({ origin }) {
         {/* Description */}
         <FormControl id="description">
           <FormLabel>Description</FormLabel>
-          <Input
+          <Textarea
             type="text"
             id="description"
             name="description"
@@ -410,7 +413,7 @@ function MediaForm({ origin }) {
         {/* Review */}
         <FormControl id="review">
           <FormLabel>Review</FormLabel>
-          <Input
+          <Textarea
             type="text"
             id="review"
             name="review"
@@ -500,7 +503,7 @@ function MediaForm({ origin }) {
         {/* Notes */}
         <FormControl id="notes">
           <FormLabel>Notes</FormLabel>
-          <Input
+          <Textarea
             type="text"
             id="notes"
             name="notes"
