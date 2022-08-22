@@ -21,6 +21,10 @@ import SimplifiedMediaCard from "./SimplifiedMediaCard";
 
 function MediaSearchForm({ origin }) {
   const [mediaSearch, setMediaSearch] = useState("");
+  const [checkbox, setCheckbox] = useState({
+    consumed: true,
+    imdb: false,
+  });
   const [results, setResults] = useState([]);
   const [errors, setErrors] = useState([]);
   const history = useHistory();
@@ -31,10 +35,20 @@ function MediaSearchForm({ origin }) {
     setMediaSearch(e.target.value);
   }
 
+  function handleCheckboxChange(e) {
+    setCheckbox((checkbox) => {
+      return {
+        ...checkbox,
+        [e.target.name]: e.target.checked,
+      };
+    });
+  }
+
   //////////////////// Handle submit
   function handleSearchSubmit(e) {
     e.preventDefault();
-    fetch(`/media?search=${mediaSearch}`, {
+    const checkedOptions = JSON.stringify(checkbox);
+    fetch(`/media?search=${mediaSearch}&options=${checkedOptions}`, {
       method: "GET",
       credentials: "include",
     })
@@ -77,6 +91,30 @@ function MediaSearchForm({ origin }) {
             value={mediaSearch}
             onChange={handleInputChange}
           />
+        </FormControl>
+
+        {/* search options */}
+        <FormControl id="search_options">
+          <FormLabel>Where would you like to search?</FormLabel>
+          {/* consumed */}
+          <Checkbox
+            id="consumed"
+            name="consumed"
+            isChecked={checkbox.consumed}
+            onChange={handleCheckboxChange}
+          >
+            Consumed
+          </Checkbox>
+          {/* imdb */}
+          <Checkbox
+            id="imdb"
+            name="imdb"
+            isChecked={checkbox.imdb}
+            onChange={handleCheckboxChange}
+            pl="10px"
+          >
+            imdb
+          </Checkbox>
         </FormControl>
 
         {/* Error Handling */}

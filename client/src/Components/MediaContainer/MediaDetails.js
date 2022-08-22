@@ -151,6 +151,7 @@ function MediaDetails({ media, handleCancelClick, initialRef }) {
             fontWeight={300}
             fontSize={formatSizeMed()}
             textAlign="center"
+            whiteSpace={"pre-wrap"}
           >
             {media.review}
           </Text>
@@ -267,6 +268,7 @@ function MediaDetails({ media, handleCancelClick, initialRef }) {
                   color={"black"}
                   fontWeight={300}
                   fontSize={formatSizeLg()}
+                  whiteSpace={"pre-wrap"}
                 >
                   {media.medium.description}
                 </Text>
@@ -411,8 +413,8 @@ function MediaDetails({ media, handleCancelClick, initialRef }) {
 
         {/* Middle Div */}
         {/* Notes */}
-        <Flex h="25%" direction="column">
-          <Flex overflow={"auto"} direction={"column"}>
+        <Flex h="25%" direction="column" align={"center"}>
+          <Flex w="80%" overflow={"auto"} direction={"column"}>
             <Heading
               lineHeight={1.1}
               fontWeight={600}
@@ -426,7 +428,8 @@ function MediaDetails({ media, handleCancelClick, initialRef }) {
               color={"black"}
               fontWeight={300}
               fontSize={formatSizeMed()}
-              textAlign="center"
+              textAlign="left"
+              whiteSpace={"pre-wrap"}
             >
               {media.notes}
             </Text>

@@ -11,7 +11,10 @@ Rails.application.routes.draw do
 
   get "/users/media", to: "users#media"
   get "/media/:id/media_series", to: "media#mediaSeries"
-  # get "/media?search=:query", to: "media#search"
+  get "/imdb", to: "external_api#imdb"
+  get "/imdb_by_id", to: "external_api#imdb_by_id"
+  get "/budb_get_all", to: "external_api#budb_get_all"
+  post "/budb_post", to: "external_api#budb_post"
 
   #################### User Auth
   get "/me", to: "users#show"

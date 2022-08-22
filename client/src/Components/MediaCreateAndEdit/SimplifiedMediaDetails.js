@@ -212,6 +212,7 @@ function SimplifiedMediaDetails({
                   color={"black"}
                   fontWeight={300}
                   fontSize={formatSizeMed()}
+                  whiteSpace={"pre-wrap"}
                 >
                   {media.description}
                 </Text>
