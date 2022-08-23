@@ -155,20 +155,44 @@ require "faker"
 
 ##################################################################################### Grab data from APIs
 
-search = "ironman"
+puts "Seeding Users"
+
+user =
+  User.create(
+    first_name: "Admin",
+    last_name: "Administrator",
+    email: "admin@admin.com",
+    password: "123"
+  )
+
+User.create(
+  first_name: "asdf",
+  last_name: "asdf",
+  email: "asdf@asdf.com",
+  password: "123"
+)
+
+puts "Seeding Media Types"
+
+MediaType.create(media_type: "book")
+MediaType.create(media_type: "movie")
+MediaType.create(media_type: "tv show")
+MediaType.create(media_type: "comic")
+MediaType.create(media_type: "youtube video")
+MediaType.create(media_type: "video game")
+MediaType.create(media_type: "board game")
+MediaType.create(media_type: "blog")
 
 #### Get first id for title matching search term
 
-primary_results = ExternalApi.imdb(search)
-
-title_id = "tt"
-
-5.times do
-  result = ExternalApi.imdb_by_id(title_id)
-  ExternalApi.create(
-    title: search,
-    title_id: title_id,
-    result: result,
-    api: "imdb"
-  )
+backup_database_responses = ExternalApi.budb_get_all
+backup_database_responses.map do |response|
+  if response["api"] == "imdb"
+    params_hash =
+      ExternalApi.convert_imdb_response_to_params_hash(
+        eval(response["response"]),
+        response["title_id"]
+      )
+  end
+  Medium.create_media_and_related_objects(params_hash, user)
 end

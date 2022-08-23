@@ -1,4 +1,7 @@
+require "concurrent"
+
 class ExternalApiController < ApplicationController
+  include Concurrent::Async
   skip_before_action :authorize, only: [:imdb]
 
   ############## get /imdb?search=:search
@@ -9,17 +12,31 @@ class ExternalApiController < ApplicationController
 
   ############## get /imdb_by_id?title_id=:title_id
   def imdb_by_id
-    data_as_hash = ExternalApi.imdb_by_id(params[:title_id])
-    byebug
-    ExternalApi.budb_post(
-      {
-        title: data_as_hash["title"],
-        title_id: params[:title_id],
-        response: data_as_hash,
-        api: "imdb"
-      }
-    )
-    render json: data_as_hash
+    user = User.find_by(id: session[:user_id])
+    medium = Medium.find_by(external_id: params[:title_id])
+
+    if medium
+      render json: medium
+    else
+      data_as_hash = ExternalApi.imdb_by_id(params[:title_id])
+      ExternalApi.budb_post(
+        {
+          title: data_as_hash["title"],
+          title_id: params[:title_id],
+          response: data_as_hash,
+          api: "imdb"
+        }
+      )
+      Medium.create_media_and_related_objects(
+        ExternalApi.convert_imdb_response_to_params_hash(
+          data_as_hash,
+          params[:title_id]
+        ),
+        user
+      )
+      medium = Medium.find_by(external_id: params[:title_id])
+      render json: medium
+    end
   end
 
   ############## get /budb_get_all
@@ -41,5 +58,47 @@ class ExternalApiController < ApplicationController
         }
       )
     render json: data_as_hash
+  end
+
+  def get_database_responses
+    backup_database_response = ExternalApi.budb_get_all
+    responses =
+      backup_database_response.map { |response| eval(response["response"]) }
+    render json: backup_database_response
+  end
+
+  ############## get /google_books?search=:search
+  def google_books
+    data_as_hash = ExternalApi.google_books(params[:search])
+    render json: data_as_hash
+  end
+
+  ############## get /google_books_by_id?title_id=:title_id
+  def google_books_by_id
+    user = User.find_by(id: session[:user_id])
+    medium = Medium.find_by(external_id: params[:title_id])
+
+    if medium
+      render json: medium
+    else
+      data_as_hash = ExternalApi.google_books_by_id(params[:title_id])
+      ExternalApi.budb_post(
+        {
+          title: data_as_hash["volumeInfo"]["title"],
+          title_id: params[:title_id],
+          response: data_as_hash,
+          api: "google_books"
+        }
+      )
+      Medium.create_media_and_related_objects(
+        ExternalApi.convert_google_books_response_to_params_hash(
+          data_as_hash,
+          params[:title_id]
+        ),
+        user
+      )
+      medium = Medium.find_by(external_id: params[:title_id])
+      render json: medium
+    end
   end
 end

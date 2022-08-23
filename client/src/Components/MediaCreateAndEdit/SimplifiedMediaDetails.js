@@ -25,7 +25,7 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { getSeriesInfo, editInfo, deleteMedia } from "../Slices/mediaSlice";
 import { setSelectedPage } from "../Slices/pageSlice";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import RatingContainer from "../MediaContainer/RatingContainer";
 import { useHistory } from "react-router-dom";
 
@@ -42,6 +42,8 @@ function SimplifiedMediaDetails({
   const defaultImageUrl = useSelector((state) => {
     return state.media.defaultImageUrl;
   });
+  const [mediaFull, setMediaFull] = useState({});
+  let creators = [];
 
   function handleAddMediaClick() {
     fetch(`/media_users`, {
@@ -49,26 +51,69 @@ function SimplifiedMediaDetails({
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ id: media.id }),
+      body: JSON.stringify({ id: mediaFull.id }),
     })
       .then((response) => response.json())
       .then((data) => {
-        removeMediaFromResults(media.id);
+        removeMediaFromResults(mediaFull.id);
         handleCancelClick();
       });
   }
 
   useEffect(() => {
-    fetch(`/media/${media.id}/media_series`)
-      .then((response) => response.json())
-      .then((data) => {
-        console.log(data);
-        dispatch(getSeriesInfo(data));
-      })
-      .catch((error) => window.alert(error));
+    if (media.source === "consumed") {
+      console.log(media.source, "in the consumed fetch");
+      fetch(`/media/${media.id}`)
+        .then((response) => response.json())
+        .then((data) => {
+          setMediaFull(data);
+
+          fetch(`/media/${data.id}/media_series`)
+            .then((response) => response.json())
+            .then((series_data) => {
+              dispatch(getSeriesInfo(series_data));
+            });
+        });
+    } else if (media.source === "imdb") {
+      fetch(`/imdb_by_id?title_id=${media.id}`)
+        .then((response) => response.json())
+        .then((data) => {
+          setMediaFull(data);
+
+          fetch(`/media/${data.id}/media_series`)
+            .then((response) => response.json())
+            .then((series_data) => {
+              dispatch(getSeriesInfo(series_data));
+            });
+        });
+    } else if (media.source === "google_books") {
+      fetch(`/google_books_by_id?title_id=${media.id}`)
+        .then((response) => response.json())
+        .then((data) => {
+          setMediaFull(data);
+
+          fetch(`/media/${data.id}/media_series`)
+            .then((response) => response.json())
+            .then((series_data) => {
+              dispatch(getSeriesInfo(series_data));
+            });
+        });
+    }
+
+    // fetch(`/media/${media.id}/media_series`)
+    //   .then((response) => response.json())
+    //   .then((data) => {
+    //     console.log(data);
+    //     dispatch(getSeriesInfo(data));
+    //   });
   }, [media]);
 
-  const creators = media.creators.map((creator) => creator.name).join(", ");
+  useEffect(() => {
+    if (mediaFull.creators) {
+      creators = mediaFull.creators.map((creator) => creator.name).join(", ");
+    }
+  }, [mediaSeries]);
+
   const textColor = useColorModeValue("gray.500", "gray.600");
 
   return (
@@ -80,8 +125,8 @@ function SimplifiedMediaDetails({
           rounded={"md"}
           alt={"media image"}
           src={
-            media.image !== "" && media.image !== null
-              ? media.image
+            mediaFull.image !== "" && mediaFull.image !== null
+              ? mediaFull.image
               : defaultImageUrl
           }
           fit={"contain"}
@@ -107,7 +152,7 @@ function SimplifiedMediaDetails({
             </Text>
             <RatingContainer
               size={formatSizeMed()}
-              rating={media.global_rating}
+              rating={mediaFull.global_rating}
             />
           </Flex>
         </Flex>
@@ -128,7 +173,7 @@ function SimplifiedMediaDetails({
               textTransform={"Capitalize"}
               pr="5px"
             >
-              ({media.media_type.media_type})
+              ({mediaFull.media_type ? mediaFull.media_type.media_type : null})
             </Text>
           </Flex>
 
@@ -141,7 +186,7 @@ function SimplifiedMediaDetails({
               textAlign="center"
               pb="5px"
             >
-              {media.title}
+              {mediaFull.title}
             </Heading>
           </Flex>
 
@@ -163,7 +208,7 @@ function SimplifiedMediaDetails({
                   fontWeight={300}
                   fontSize={formatSizeLg()}
                 >
-                  {mediaSeries.series.title}, {media.media_type.media_type}{" "}
+                  {mediaSeries.series.title}, {mediaFull.media_type.media_type}{" "}
                   {mediaSeries.number}
                 </Text>
               )}
@@ -214,7 +259,7 @@ function SimplifiedMediaDetails({
                   fontSize={formatSizeMed()}
                   whiteSpace={"pre-wrap"}
                 >
-                  {media.description}
+                  {mediaFull.description}
                 </Text>
               </Flex>
             </Flex>
@@ -244,7 +289,7 @@ function SimplifiedMediaDetails({
             </Flex>
 
             {/* Publisher */}
-            {media.publisher !== "none" && media.publisher !== null ? (
+            {mediaFull.publisher !== "none" && mediaFull.publisher !== null ? (
               <Flex pt="5px" direction={{ base: "column", md: "row" }}>
                 <Flex w={{ base: "100%", md: "25%" }}>
                   <Text
@@ -263,7 +308,7 @@ function SimplifiedMediaDetails({
                     fontWeight={300}
                     fontSize={formatSizeMed()}
                   >
-                    {media.publisher}
+                    {mediaFull.publisher}
                   </Text>
                 </Flex>
               </Flex>
@@ -271,53 +316,55 @@ function SimplifiedMediaDetails({
 
             {/* Release Date */}
             <Flex pt="5px" direction={{ base: "column", md: "row" }}>
-              {media.release_date.slice(4) !== "-00-00" ? (
-                <>
-                  <Flex w={{ base: "100%", md: "25%" }}>
-                    <Text
-                      color={"black"}
-                      fontWeight={300}
-                      fontSize={formatSizeMed()}
-                      textDecoration="underline"
-                      pr="5px"
-                    >
-                      Release Date:
-                    </Text>
-                  </Flex>
-                  <Flex w={{ base: "100%", md: "75%" }}>
-                    <Text
-                      color={"black"}
-                      fontWeight={300}
-                      fontSize={formatSizeMed()}
-                    >
-                      {media.release_date}
-                    </Text>
-                  </Flex>
-                </>
-              ) : (
-                <>
-                  <Flex w={{ base: "100%", md: "25%" }}>
-                    <Text
-                      color={"black"}
-                      fontWeight={300}
-                      fontSize={formatSizeMed()}
-                      textDecoration="underline"
-                      pr="5px"
-                    >
-                      Release Year:
-                    </Text>
-                  </Flex>
-                  <Flex w={{ base: "100%", md: "75%" }}>
-                    <Text
-                      color={"black"}
-                      fontWeight={300}
-                      fontSize={formatSizeMed()}
-                    >
-                      {media.release_date.slice(0, 4)}
-                    </Text>
-                  </Flex>
-                </>
-              )}
+              {mediaFull.release_date ? (
+                mediaFull.release_date.slice(4) !== "-00-00" ? (
+                  <>
+                    <Flex w={{ base: "100%", md: "25%" }}>
+                      <Text
+                        color={"black"}
+                        fontWeight={300}
+                        fontSize={formatSizeMed()}
+                        textDecoration="underline"
+                        pr="5px"
+                      >
+                        Release Date:
+                      </Text>
+                    </Flex>
+                    <Flex w={{ base: "100%", md: "75%" }}>
+                      <Text
+                        color={"black"}
+                        fontWeight={300}
+                        fontSize={formatSizeMed()}
+                      >
+                        {mediaFull.release_date}
+                      </Text>
+                    </Flex>
+                  </>
+                ) : (
+                  <>
+                    <Flex w={{ base: "100%", md: "25%" }}>
+                      <Text
+                        color={"black"}
+                        fontWeight={300}
+                        fontSize={formatSizeMed()}
+                        textDecoration="underline"
+                        pr="5px"
+                      >
+                        Release Year:
+                      </Text>
+                    </Flex>
+                    <Flex w={{ base: "100%", md: "75%" }}>
+                      <Text
+                        color={"black"}
+                        fontWeight={300}
+                        fontSize={formatSizeMed()}
+                      >
+                        {mediaFull.release_date.slice(0, 4)}
+                      </Text>
+                    </Flex>
+                  </>
+                )
+              ) : null}
             </Flex>
           </Flex>
         </Flex>

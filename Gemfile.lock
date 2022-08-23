@@ -88,6 +88,8 @@ GEM
     faker (2.22.0)
       i18n (>= 1.8.11, < 2)
     ffi (1.15.5)
+    figaro (1.2.0)
+      thor (>= 0.14.0, < 2)
     fuzzy-string-match (1.0.1)
       RubyInline (>= 3.8.6)
     globalid (1.0.0)
@@ -184,7 +186,9 @@ DEPENDENCIES
   bcrypt (~> 3.1.7)
   bootsnap
   byebug
+  concurrent-ruby
   faker
+  figaro
   fuzzy-string-match
   json
   listen (~> 3.3)

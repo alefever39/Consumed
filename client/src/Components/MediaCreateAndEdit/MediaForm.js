@@ -166,6 +166,7 @@ function MediaForm({ origin }) {
         if (data.errors) {
           setErrors(data.errors);
         } else {
+          setErrors([]);
           dispatch(setSelectedPage("my_media"));
           history.push("/my_media");
         }
@@ -173,7 +174,7 @@ function MediaForm({ origin }) {
   }
 
   //////////////////// Handle edit save
-  function handleAddMediaEditSubmit(e) {
+  function handleEditMediaSubmit(e) {
     e.preventDefault();
 
     const creator_ids = editInfo.media.creators
@@ -211,9 +212,11 @@ function MediaForm({ origin }) {
     })
       .then((response) => response.json())
       .then((data) => {
+        console.log(data);
         if (data.errors) {
           setErrors(data.errors);
         } else {
+          setErrors([]);
           dispatch(setSelectedPage("my_media"));
           history.push("/my_media");
         }
@@ -523,6 +526,8 @@ function MediaForm({ origin }) {
               );
             })
           : null}
+
+        {/* Buttons */}
         <Flex justify={"space-around"}>
           {origin === "edit" ? (
             <>
@@ -533,7 +538,7 @@ function MediaForm({ origin }) {
                   bg: "blue.500",
                 }}
                 type="submit"
-                onClick={handleAddMediaEditSubmit}
+                onClick={handleEditMediaSubmit}
               >
                 Save
               </Button>

@@ -54,3 +54,7 @@ gem "faker"
 gem 'fuzzy-string-match'
 
 gem 'json'
+
+gem 'concurrent-ruby'
+
+gem 'figaro'
