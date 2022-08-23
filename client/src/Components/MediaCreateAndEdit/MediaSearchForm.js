@@ -10,6 +10,8 @@ import {
   Select,
   Checkbox,
   FormHelperText,
+  Radio,
+  RadioGroup,
 } from "@chakra-ui/react";
 import { useState } from "react";
 import { useHistory } from "react-router-dom";
@@ -24,6 +26,7 @@ function MediaSearchForm({ origin }) {
   const [checkbox, setCheckbox] = useState({
     consumed: true,
     imdb: false,
+    google_books: false,
   });
   const [results, setResults] = useState([]);
   const [errors, setErrors] = useState([]);
@@ -44,11 +47,14 @@ function MediaSearchForm({ origin }) {
     });
   }
 
+  console.log(checkbox);
+
   //////////////////// Handle submit
   function handleSearchSubmit(e) {
     e.preventDefault();
     const checkedOptions = JSON.stringify(checkbox);
-    fetch(`/media?search=${mediaSearch}&options=${checkedOptions}`, {
+    const mediaSearchConverted = mediaSearch.split(" ").join("");
+    fetch(`/media?search=${mediaSearchConverted}&options=${checkedOptions}`, {
       method: "GET",
       credentials: "include",
     })
@@ -115,6 +121,16 @@ function MediaSearchForm({ origin }) {
           >
             imdb
           </Checkbox>
+          {/* google_books */}
+          <Checkbox
+            id="google_books"
+            name="google_books"
+            isChecked={checkbox.google_books}
+            onChange={handleCheckboxChange}
+            pl="10px"
+          >
+            Google Books
+          </Checkbox>
         </FormControl>
 
         {/* Error Handling */}
@@ -147,6 +163,7 @@ function MediaSearchForm({ origin }) {
       <Flex gap={6} padding={6} wrap="wrap" justify="space-around">
         {results ? (
           results.map((medium) => {
+            console.log(medium);
             return (
               <SimplifiedMediaCard
                 removeMediaFromResults={removeMediaFromResults}
