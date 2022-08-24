@@ -128,7 +128,7 @@ function MediaSearchForm({ origin }) {
             pl="10px"
             isDisabled={mediaSearch === "" ? true : false}
           >
-            imdb
+            IMDb
           </Checkbox>
           {/* google_books */}
           <Checkbox
