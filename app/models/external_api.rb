@@ -132,10 +132,17 @@ class ExternalApi < ApplicationRecord
     media_number = 1
     season_exists = false
     series_exists = false
-    date_array = response_hash["volumeInfo"]["publishedDate"].split("-")
-    year = date_array[0].to_i
-    month = date_array[1].to_i
-    date = date_array[2].to_i
+
+    if (response_hash["volumeInfo"]["publishedDate"])
+      date_array = response_hash["volumeInfo"]["publishedDate"].split("-")
+      year = date_array[0].to_i
+      month = date_array[1].to_i
+      date = date_array[2].to_i
+    end
+
+    if (response_hash["volumeInfo"]["imageLinks"])
+      image = response_hash["volumeInfo"]["imageLinks"]["thumbnail"]
+    end
 
     params_hash = {
       media_type: media_type,
@@ -144,7 +151,7 @@ class ExternalApi < ApplicationRecord
       date: date,
       title: response_hash["volumeInfo"]["title"],
       description: response_hash["volumeInfo"]["description"],
-      image: response_hash["volumeInfo"]["imageLinks"]["thumbnail"],
+      image: image,
       consumed: "not consumed",
       series_exists: series_exists,
       season_number: season_number,

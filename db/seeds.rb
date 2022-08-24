@@ -201,5 +201,5 @@ backup_database_responses.map do |response|
         response["title_id"]
       )
   end
-  Medium.create_media_and_related_objects(params_hash, user)
+  Medium.create_media_and_related_objects_without_exceptions(params_hash, user)
 end
