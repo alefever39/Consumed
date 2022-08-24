@@ -52,8 +52,20 @@ function MediaSearchForm({ origin }) {
   //////////////////// Handle submit
   function handleSearchSubmit(e) {
     e.preventDefault();
-    const checkedOptions = JSON.stringify(checkbox);
+
+    let checkedOptions;
+    if (mediaSearch === "") {
+      checkedOptions = JSON.stringify({
+        consumed: true,
+        imdb: false,
+        google_books: false,
+      });
+    } else {
+      checkedOptions = JSON.stringify(checkbox);
+    }
+
     const mediaSearchConverted = mediaSearch.split(" ").join("");
+
     fetch(`/media?search=${mediaSearchConverted}&options=${checkedOptions}`, {
       method: "GET",
       credentials: "include",
@@ -106,7 +118,7 @@ function MediaSearchForm({ origin }) {
           <Checkbox
             id="consumed"
             name="consumed"
-            isChecked={checkbox.consumed}
+            isChecked={mediaSearch === "" ? true : checkbox.consumed}
             onChange={handleCheckboxChange}
           >
             Consumed
@@ -115,9 +127,10 @@ function MediaSearchForm({ origin }) {
           <Checkbox
             id="imdb"
             name="imdb"
-            isChecked={checkbox.imdb}
+            isChecked={mediaSearch === "" ? false : checkbox.imdb}
             onChange={handleCheckboxChange}
             pl="10px"
+            isDisabled={mediaSearch === "" ? true : false}
           >
             imdb
           </Checkbox>
@@ -125,9 +138,10 @@ function MediaSearchForm({ origin }) {
           <Checkbox
             id="google_books"
             name="google_books"
-            isChecked={checkbox.google_books}
+            isChecked={mediaSearch === "" ? false : checkbox.google_books}
             onChange={handleCheckboxChange}
             pl="10px"
+            isDisabled={mediaSearch === "" ? true : false}
           >
             Google Books
           </Checkbox>
