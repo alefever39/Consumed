@@ -104,23 +104,8 @@ function MediaDetails({ media, handleCancelClick, initialRef }) {
           pb="10px"
         />
 
-        {/* Global and User Ratings */}
+        {/* User Ratings */}
         <Flex direction={"column"} align="flex-end">
-          <Flex direction={{ base: "column", md: "row" }}>
-            <Text
-              color={"black"}
-              fontWeight={300}
-              fontSize={formatSizeMed()}
-              textAlign="center"
-              textTransform={"uppercase"}
-            >
-              Global Rating:
-            </Text>
-            <RatingContainer
-              size={formatSizeMed()}
-              rating={media.medium.global_rating}
-            />
-          </Flex>
           <Flex direction={{ base: "column", md: "row" }}>
             <Text
               color={"black"}
@@ -277,28 +262,30 @@ function MediaDetails({ media, handleCancelClick, initialRef }) {
             </Flex>
 
             {/* Creators */}
-            <Flex pt="5px" direction={{ base: "column", md: "row" }}>
-              <Flex w={{ base: "100%", md: "25%" }}>
-                <Text
-                  color={"black"}
-                  fontWeight={300}
-                  fontSize={formatSizeLg()}
-                  textDecoration="underline"
-                  pr="5px"
-                >
-                  Creator(s):
-                </Text>
+            {creators ? (
+              <Flex pt="5px" direction={{ base: "column", md: "row" }}>
+                <Flex w={{ base: "100%", md: "25%" }}>
+                  <Text
+                    color={"black"}
+                    fontWeight={300}
+                    fontSize={formatSizeLg()}
+                    textDecoration="underline"
+                    pr="5px"
+                  >
+                    Creator(s):
+                  </Text>
+                </Flex>
+                <Flex w={{ base: "100%", md: "75%" }}>
+                  <Text
+                    color={"black"}
+                    fontWeight={300}
+                    fontSize={formatSizeLg()}
+                  >
+                    {creators}
+                  </Text>
+                </Flex>
               </Flex>
-              <Flex w={{ base: "100%", md: "75%" }}>
-                <Text
-                  color={"black"}
-                  fontWeight={300}
-                  fontSize={formatSizeLg()}
-                >
-                  {creators}
-                </Text>
-              </Flex>
-            </Flex>
+            ) : null}
 
             {/* Publisher */}
             {media.medium.publisher !== "none" &&
@@ -390,7 +377,7 @@ function MediaDetails({ media, handleCancelClick, initialRef }) {
                       textDecoration="underline"
                       pr="5px"
                     >
-                      Located:
+                      Location:
                     </Text>
                   </Flex>
                   <Flex w={{ base: "100%", md: "75%" }}>

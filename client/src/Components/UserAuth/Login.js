@@ -58,7 +58,7 @@ function Login() {
 
   return (
     <Flex
-      minH={"70vh"}
+      minH={"100vh"}
       align={"center"}
       justify={"center"}
       bg={useColorModeValue("gray.50", "gray.800")}
@@ -137,53 +137,6 @@ function Login() {
       </Stack>
     </Flex>
   );
-
-  // return (
-  //   <form onSubmit={handleLoginSubmit}>
-  //     <FormControl isRequired>
-  //       <FormLabel htmlFor="email">Email</FormLabel>
-  //       <Input
-  //         id="email"
-  //         type="email"
-  //         name="email"
-  //         placeholder="example@example.com"
-  //         value={formData.email}
-  //         onChange={handleInputChange}
-  //       />
-  //       <FormHelperText>We'll never share your email.</FormHelperText>
-  //     </FormControl>
-  //     <br />
-  //     <FormControl isRequired>
-  //       <FormLabel htmlFor="password">Password</FormLabel>
-  //       <Input
-  //         id="password"
-  //         type="password"
-  //         name="password"
-  //         placeholder=""
-  //         value={formData.password}
-  //         onChange={handleInputChange}
-  //       />
-  //     </FormControl>
-  //     <br />
-  //     {errors
-  //       ? errors.map((error) => {
-  //           return (
-  //             <>
-  //               <p key={error}>{error}</p>
-  //               <br />
-  //             </>
-  //           );
-  //         })
-  //       : null}
-  //     <Flex>
-  //       <Spacer />
-  //       <Button colorScheme="teal" type="submit">
-  //         Login
-  //       </Button>
-  //       <Spacer />
-  //     </Flex>
-  //   </form>
-  // );
 }
 
 export default Login;

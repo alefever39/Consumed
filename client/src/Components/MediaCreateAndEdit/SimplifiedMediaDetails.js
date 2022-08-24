@@ -7,11 +7,7 @@ import {
   Heading,
   useColorModeValue,
   Divider,
-  Modal,
-  useDisclosure,
-  ModalOverlay,
-  ModalContent,
-  ModalBody,
+  Spinner,
 } from "@chakra-ui/react";
 import {
   consumedTextColor,
@@ -43,6 +39,9 @@ function SimplifiedMediaDetails({
     return state.media.defaultImageUrl;
   });
   const [mediaFull, setMediaFull] = useState({});
+  const [searching, setSearching] = useState(false);
+  const buttonColor = useColorModeValue("white", "gray.900");
+  const textColor = useColorModeValue("gray.500", "gray.600");
   let creators = [];
 
   function handleAddMediaClick() {
@@ -61,6 +60,7 @@ function SimplifiedMediaDetails({
   }
 
   useEffect(() => {
+    setSearching(true);
     if (media.source === "consumed") {
       console.log(media.source, "in the consumed fetch");
       fetch(`/media/${media.id}`)
@@ -71,6 +71,7 @@ function SimplifiedMediaDetails({
           fetch(`/media/${data.id}/media_series`)
             .then((response) => response.json())
             .then((series_data) => {
+              setSearching(false);
               dispatch(getSeriesInfo(series_data));
             });
         });
@@ -83,6 +84,7 @@ function SimplifiedMediaDetails({
           fetch(`/media/${data.id}/media_series`)
             .then((response) => response.json())
             .then((series_data) => {
+              setSearching(false);
               dispatch(getSeriesInfo(series_data));
             });
         });
@@ -95,6 +97,7 @@ function SimplifiedMediaDetails({
           fetch(`/media/${data.id}/media_series`)
             .then((response) => response.json())
             .then((series_data) => {
+              setSearching(false);
               dispatch(getSeriesInfo(series_data));
             });
         });
@@ -114,300 +117,302 @@ function SimplifiedMediaDetails({
     }
   }, [mediaSeries]);
 
-  const textColor = useColorModeValue("gray.500", "gray.600");
-
   return (
-    <Flex maxW={"100%"} h={"90vh"} direction="row" wrap="wrap" margin="8px">
-      {/*//////////////// Left Colum ////////////////*/}
-      <Flex w="35%" h="100%" direction="column" align="center">
-        {/* Media Image */}
-        <Image
-          rounded={"md"}
-          alt={"media image"}
-          src={
-            mediaFull.image !== "" && mediaFull.image !== null
-              ? mediaFull.image
-              : defaultImageUrl
-          }
-          fit={"contain"}
-          align={"center"}
-          w={"full"}
-          //   h={{ base: "50%", sm: "400px", lg: "500px" }}
-          h={{ base: "200px", sm: "400px", lg: "400px" }}
-          marginTop="5px"
-          pb="10px"
-        />
-
-        {/* Global Ratings */}
-        <Flex direction={"column"} align="flex-end">
-          <Flex direction={{ base: "column", md: "row" }}>
-            <Text
-              color={"black"}
-              fontWeight={300}
-              fontSize={formatSizeMed()}
-              textAlign="center"
-              textTransform={"uppercase"}
-            >
-              Global Rating:
-            </Text>
-            <RatingContainer
-              size={formatSizeMed()}
-              rating={mediaFull.global_rating}
-            />
-          </Flex>
+    <>
+      {searching ? (
+        <Flex align="center" justify="center" w={"100%"} h={"100%"}>
+          <Spinner size="xl" />
         </Flex>
-      </Flex>
-
-      {/*//////////////// Right Colum ////////////////*/}
-      <Flex w="65%" h={"100%"} direction="column" align="space-around" pl="3vw">
-        {/* Top Div */}
-        <Flex direction="column" h="55%" align="space-around">
-          {/* Top Right Div */}
-          <Flex alignSelf="flex-end">
-            {/* Media Type */}
-            <Text
-              color={"black"}
-              fontWeight={300}
-              fontSize={formatSizeLg()}
-              textAlign="center"
-              textTransform={"Capitalize"}
-              pr="5px"
-            >
-              ({mediaFull.media_type ? mediaFull.media_type.media_type : null})
-            </Text>
-          </Flex>
-
-          {/* Header */}
-          <Flex justify={"center"} as={"header"}>
-            <Heading
-              lineHeight={1.1}
-              fontWeight={600}
-              fontSize={formatSize5xl()}
-              textAlign="center"
-              pb="5px"
-            >
-              {mediaFull.title}
-            </Heading>
-          </Flex>
-
-          {/* Series Information */}
-          {mediaSeries && mediaSeries.number ? (
-            <Flex justify={"center"}>
-              {mediaSeries.season.season_exists ? (
-                <Text
-                  color={"black"}
-                  fontWeight={300}
-                  fontSize={formatSizeLg()}
-                >
-                  {mediaSeries.series.title}, Season {mediaSeries.season.number}
-                  , Episode {mediaSeries.number}
-                </Text>
-              ) : (
-                <Text
-                  color={"black"}
-                  fontWeight={300}
-                  fontSize={formatSizeLg()}
-                >
-                  {mediaSeries.series.title}, {mediaFull.media_type.media_type}{" "}
-                  {mediaSeries.number}
-                </Text>
-              )}
-            </Flex>
-          ) : null}
-
-          <Divider />
-
-          {/* Details Section */}
-          <Flex
-            border="3px"
-            borderColor="gray.200"
-            w="80%"
-            alignSelf={"center"}
-            direction="column"
-            overflow={"auto"}
-            pt="5px"
-          >
-            <Box as={"header"}>
-              <Heading
-                lineHeight={1.1}
-                fontWeight={600}
-                fontSize={formatSize2xl()}
-                textAlign="center"
+      ) : (
+        <Flex maxW={"100%"} h={"90vh"} direction="row" wrap="wrap" margin="8px">
+          {/*//////////////// Left Colum ////////////////*/}
+          {searching ? null : (
+            <Flex w="35%" h="100%" direction="column" align="center">
+              {/* Media Image */}
+              <Image
+                rounded={"md"}
+                alt={"media image"}
+                src={
+                  mediaFull.image !== "" && mediaFull.image !== null
+                    ? mediaFull.image
+                    : defaultImageUrl
+                }
+                fit={"contain"}
+                align={"center"}
+                w={"full"}
+                //   h={{ base: "50%", sm: "400px", lg: "500px" }}
+                h={{ base: "200px", sm: "400px", lg: "400px" }}
+                marginTop="5px"
                 pb="10px"
-              >
-                Details
-              </Heading>
-            </Box>
+              />
+            </Flex>
+          )}
 
-            {/* description */}
-            <Flex direction={{ base: "column", md: "row" }}>
-              <Flex w={{ base: "100%", md: "25%" }}>
+          {/*//////////////// Right Colum ////////////////*/}
+          <Flex
+            w="65%"
+            h={"100%"}
+            direction="column"
+            align="space-around"
+            pl="3vw"
+          >
+            {/* Top Div */}
+            <Flex direction="column" h="55%" align="space-around">
+              {/* Top Right Div */}
+              <Flex alignSelf="flex-end">
+                {/* Media Type */}
                 <Text
                   color={"black"}
                   fontWeight={300}
-                  fontSize={formatSizeMed()}
-                  textDecoration="underline"
+                  fontSize={formatSizeLg()}
+                  textAlign="center"
+                  textTransform={"Capitalize"}
                   pr="5px"
                 >
-                  Description:
+                  (
+                  {mediaFull.media_type
+                    ? mediaFull.media_type.media_type
+                    : null}
+                  )
                 </Text>
               </Flex>
-              <Flex w={{ base: "100%", md: "75%" }}>
-                <Text
-                  color={"black"}
-                  fontWeight={300}
-                  fontSize={formatSizeMed()}
-                  whiteSpace={"pre-wrap"}
-                >
-                  {mediaFull.description}
-                </Text>
-              </Flex>
-            </Flex>
 
-            {/* Creators */}
-            <Flex pt="5px" direction={{ base: "column", md: "row" }}>
-              <Flex w={{ base: "100%", md: "25%" }}>
-                <Text
-                  color={"black"}
-                  fontWeight={300}
-                  fontSize={formatSizeMed()}
-                  textDecoration="underline"
-                  pr="5px"
+              {/* Header */}
+              <Flex justify={"center"} as={"header"}>
+                <Heading
+                  lineHeight={1.1}
+                  fontWeight={600}
+                  fontSize={formatSize5xl()}
+                  textAlign="center"
+                  pb="5px"
                 >
-                  Creator(s):
-                </Text>
+                  {mediaFull.title}
+                </Heading>
               </Flex>
-              <Flex w={{ base: "100%", md: "75%" }}>
-                <Text
-                  color={"black"}
-                  fontWeight={300}
-                  fontSize={formatSizeMed()}
-                >
-                  {creators}
-                </Text>
-              </Flex>
-            </Flex>
 
-            {/* Publisher */}
-            {mediaFull.publisher !== "none" && mediaFull.publisher !== null ? (
-              <Flex pt="5px" direction={{ base: "column", md: "row" }}>
-                <Flex w={{ base: "100%", md: "25%" }}>
-                  <Text
-                    color={"black"}
-                    fontWeight={300}
-                    fontSize={formatSizeMed()}
-                    textDecoration="underline"
-                    pr="5px"
-                  >
-                    Publisher:
-                  </Text>
+              {/* Series Information */}
+              {mediaSeries && mediaSeries.number ? (
+                <Flex justify={"center"}>
+                  {mediaSeries.season.season_exists ? (
+                    <Text
+                      color={"black"}
+                      fontWeight={300}
+                      fontSize={formatSizeLg()}
+                    >
+                      {mediaSeries.series.title}, Season{" "}
+                      {mediaSeries.season.number}, Episode {mediaSeries.number}
+                    </Text>
+                  ) : (
+                    <Text
+                      color={"black"}
+                      fontWeight={300}
+                      fontSize={formatSizeLg()}
+                    >
+                      {mediaSeries.series.title},{" "}
+                      {mediaFull.media_type.media_type} {mediaSeries.number}
+                    </Text>
+                  )}
                 </Flex>
-                <Flex w={{ base: "100%", md: "75%" }}>
-                  <Text
-                    color={"black"}
-                    fontWeight={300}
-                    fontSize={formatSizeMed()}
-                  >
-                    {mediaFull.publisher}
-                  </Text>
-                </Flex>
-              </Flex>
-            ) : null}
-
-            {/* Release Date */}
-            <Flex pt="5px" direction={{ base: "column", md: "row" }}>
-              {mediaFull.release_date ? (
-                mediaFull.release_date.slice(4) !== "-00-00" ? (
-                  <>
-                    <Flex w={{ base: "100%", md: "25%" }}>
-                      <Text
-                        color={"black"}
-                        fontWeight={300}
-                        fontSize={formatSizeMed()}
-                        textDecoration="underline"
-                        pr="5px"
-                      >
-                        Release Date:
-                      </Text>
-                    </Flex>
-                    <Flex w={{ base: "100%", md: "75%" }}>
-                      <Text
-                        color={"black"}
-                        fontWeight={300}
-                        fontSize={formatSizeMed()}
-                      >
-                        {mediaFull.release_date}
-                      </Text>
-                    </Flex>
-                  </>
-                ) : (
-                  <>
-                    <Flex w={{ base: "100%", md: "25%" }}>
-                      <Text
-                        color={"black"}
-                        fontWeight={300}
-                        fontSize={formatSizeMed()}
-                        textDecoration="underline"
-                        pr="5px"
-                      >
-                        Release Year:
-                      </Text>
-                    </Flex>
-                    <Flex w={{ base: "100%", md: "75%" }}>
-                      <Text
-                        color={"black"}
-                        fontWeight={300}
-                        fontSize={formatSizeMed()}
-                      >
-                        {mediaFull.release_date.slice(0, 4)}
-                      </Text>
-                    </Flex>
-                  </>
-                )
               ) : null}
+
+              <Divider />
+
+              {/* Details Section */}
+              <Flex
+                border="3px"
+                borderColor="gray.200"
+                w="80%"
+                alignSelf={"center"}
+                direction="column"
+                overflow={"auto"}
+                pt="5px"
+              >
+                <Box as={"header"}>
+                  <Heading
+                    lineHeight={1.1}
+                    fontWeight={600}
+                    fontSize={formatSize2xl()}
+                    textAlign="center"
+                    pb="10px"
+                  >
+                    Details
+                  </Heading>
+                </Box>
+
+                {/* description */}
+                <Flex direction={{ base: "column", md: "row" }}>
+                  <Flex w={{ base: "100%", md: "25%" }}>
+                    <Text
+                      color={"black"}
+                      fontWeight={300}
+                      fontSize={formatSizeMed()}
+                      textDecoration="underline"
+                      pr="5px"
+                    >
+                      Description:
+                    </Text>
+                  </Flex>
+                  <Flex w={{ base: "100%", md: "75%" }}>
+                    <Text
+                      color={"black"}
+                      fontWeight={300}
+                      fontSize={formatSizeMed()}
+                      whiteSpace={"pre-wrap"}
+                    >
+                      {mediaFull.description}
+                    </Text>
+                  </Flex>
+                </Flex>
+
+                {/* Creators */}
+                {creators && creators[0] ? (
+                  <Flex pt="5px" direction={{ base: "column", md: "row" }}>
+                    <Flex w={{ base: "100%", md: "25%" }}>
+                      <Text
+                        color={"black"}
+                        fontWeight={300}
+                        fontSize={formatSizeMed()}
+                        textDecoration="underline"
+                        pr="5px"
+                      >
+                        Creator(s):
+                      </Text>
+                    </Flex>
+                    <Flex w={{ base: "100%", md: "75%" }}>
+                      <Text
+                        color={"black"}
+                        fontWeight={300}
+                        fontSize={formatSizeMed()}
+                      >
+                        {creators}
+                      </Text>
+                    </Flex>
+                  </Flex>
+                ) : null}
+
+                {/* Publisher */}
+                {mediaFull.publisher !== "none" &&
+                mediaFull.publisher !== null ? (
+                  <Flex pt="5px" direction={{ base: "column", md: "row" }}>
+                    <Flex w={{ base: "100%", md: "25%" }}>
+                      <Text
+                        color={"black"}
+                        fontWeight={300}
+                        fontSize={formatSizeMed()}
+                        textDecoration="underline"
+                        pr="5px"
+                      >
+                        Publisher:
+                      </Text>
+                    </Flex>
+                    <Flex w={{ base: "100%", md: "75%" }}>
+                      <Text
+                        color={"black"}
+                        fontWeight={300}
+                        fontSize={formatSizeMed()}
+                      >
+                        {mediaFull.publisher}
+                      </Text>
+                    </Flex>
+                  </Flex>
+                ) : null}
+
+                {/* Release Date */}
+                <Flex pt="5px" direction={{ base: "column", md: "row" }}>
+                  {mediaFull.release_date ? (
+                    mediaFull.release_date.slice(4) !== "-00-00" ? (
+                      <>
+                        <Flex w={{ base: "100%", md: "25%" }}>
+                          <Text
+                            color={"black"}
+                            fontWeight={300}
+                            fontSize={formatSizeMed()}
+                            textDecoration="underline"
+                            pr="5px"
+                          >
+                            Release Date:
+                          </Text>
+                        </Flex>
+                        <Flex w={{ base: "100%", md: "75%" }}>
+                          <Text
+                            color={"black"}
+                            fontWeight={300}
+                            fontSize={formatSizeMed()}
+                          >
+                            {mediaFull.release_date}
+                          </Text>
+                        </Flex>
+                      </>
+                    ) : (
+                      <>
+                        <Flex w={{ base: "100%", md: "25%" }}>
+                          <Text
+                            color={"black"}
+                            fontWeight={300}
+                            fontSize={formatSizeMed()}
+                            textDecoration="underline"
+                            pr="5px"
+                          >
+                            Release Year:
+                          </Text>
+                        </Flex>
+                        <Flex w={{ base: "100%", md: "75%" }}>
+                          <Text
+                            color={"black"}
+                            fontWeight={300}
+                            fontSize={formatSizeMed()}
+                          >
+                            {mediaFull.release_date.slice(0, 4)}
+                          </Text>
+                        </Flex>
+                      </>
+                    )
+                  ) : null}
+                </Flex>
+              </Flex>
+            </Flex>
+
+            {/* Buttons */}
+            <Flex alignSelf={"flex-end"}>
+              <Flex pl="10px">
+                <Button
+                  rounded={"md"}
+                  onClick={handleAddMediaClick}
+                  mt={4}
+                  size={formatSizeLg()}
+                  bg={"cyan.400"}
+                  color={buttonColor}
+                  textTransform={"uppercase"}
+                  _hover={{
+                    transform: "translateY(2px)",
+                    boxShadow: "lg",
+                  }}
+                >
+                  Add Media
+                </Button>
+              </Flex>
+              <Flex pl="10px">
+                <Button
+                  rounded={"md"}
+                  onClick={handleCancelClick}
+                  mt={4}
+                  size={formatSizeLg()}
+                  bg={"red.400"}
+                  color={buttonColor}
+                  textTransform={"uppercase"}
+                  _hover={{
+                    transform: "translateY(2px)",
+                    boxShadow: "lg",
+                  }}
+                >
+                  Cancel
+                </Button>
+              </Flex>
             </Flex>
           </Flex>
         </Flex>
-
-        {/* Buttons */}
-        <Flex alignSelf={"flex-end"}>
-          <Flex pl="10px">
-            <Button
-              rounded={"md"}
-              onClick={handleAddMediaClick}
-              mt={4}
-              size={formatSizeLg()}
-              bg={"cyan.400"}
-              color={useColorModeValue("white", "gray.900")}
-              textTransform={"uppercase"}
-              _hover={{
-                transform: "translateY(2px)",
-                boxShadow: "lg",
-              }}
-            >
-              Add Media
-            </Button>
-          </Flex>
-          <Flex pl="10px">
-            <Button
-              rounded={"md"}
-              onClick={handleCancelClick}
-              mt={4}
-              size={formatSizeLg()}
-              bg={"red.400"}
-              color={useColorModeValue("white", "gray.900")}
-              textTransform={"uppercase"}
-              _hover={{
-                transform: "translateY(2px)",
-                boxShadow: "lg",
-              }}
-            >
-              Cancel
-            </Button>
-          </Flex>
-        </Flex>
-      </Flex>
-    </Flex>
+      )}
+    </>
   );
 }
 

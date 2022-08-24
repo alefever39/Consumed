@@ -7,18 +7,12 @@ import {
   Stack,
   Heading,
   useColorModeValue,
-  Select,
+  Spinner,
   Checkbox,
-  FormHelperText,
-  Radio,
-  RadioGroup,
 } from "@chakra-ui/react";
 import { useState } from "react";
 import { useHistory } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { getUser } from "../Slices/userSlice";
-import CustomNumberInput from "./CustomNumberInput";
-import { buildDateOptionsSelector } from "../HelperFunctions/mediaFormFunctions";
 import SimplifiedMediaCard from "./SimplifiedMediaCard";
 
 function MediaSearchForm({ origin }) {
@@ -30,6 +24,7 @@ function MediaSearchForm({ origin }) {
   });
   const [results, setResults] = useState([]);
   const [errors, setErrors] = useState([]);
+  const [searching, setSearching] = useState(false);
   const history = useHistory();
   const dispatch = useDispatch();
 
@@ -47,11 +42,11 @@ function MediaSearchForm({ origin }) {
     });
   }
 
-  console.log(checkbox);
-
   //////////////////// Handle submit
   function handleSearchSubmit(e) {
     e.preventDefault();
+
+    setSearching(true);
 
     let checkedOptions;
     if (mediaSearch === "") {
@@ -72,6 +67,7 @@ function MediaSearchForm({ origin }) {
     })
       .then((response) => response.json())
       .then((data) => {
+        setSearching(false);
         if (data.errors) {
           setErrors(data.errors);
         } else {
@@ -174,22 +170,28 @@ function MediaSearchForm({ origin }) {
           </Button>
         </Flex>
       </Stack>
-      <Flex gap={6} padding={6} wrap="wrap" justify="space-around">
-        {results ? (
-          results.map((medium) => {
-            console.log(medium);
-            return (
-              <SimplifiedMediaCard
-                removeMediaFromResults={removeMediaFromResults}
-                key={medium.id}
-                media={medium}
-              />
-            );
-          })
-        ) : (
-          <p>Loading...</p>
-        )}
-      </Flex>
+      {searching ? (
+        <Flex pt="5vh" align="center" justify="center">
+          <Spinner size="xl" />
+        </Flex>
+      ) : (
+        <Flex gap={6} padding={6} wrap="wrap" justify="space-around">
+          {results ? (
+            results.map((medium) => {
+              console.log(medium);
+              return (
+                <SimplifiedMediaCard
+                  removeMediaFromResults={removeMediaFromResults}
+                  key={medium.id}
+                  media={medium}
+                />
+              );
+            })
+          ) : (
+            <p>Loading...</p>
+          )}
+        </Flex>
+      )}
     </Flex>
   );
 }
