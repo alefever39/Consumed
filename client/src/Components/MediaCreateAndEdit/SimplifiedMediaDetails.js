@@ -62,7 +62,6 @@ function SimplifiedMediaDetails({
   useEffect(() => {
     setSearching(true);
     if (media.source === "consumed") {
-      console.log(media.source, "in the consumed fetch");
       fetch(`/media/${media.id}`)
         .then((response) => response.json())
         .then((data) => {
@@ -102,13 +101,6 @@ function SimplifiedMediaDetails({
             });
         });
     }
-
-    // fetch(`/media/${media.id}/media_series`)
-    //   .then((response) => response.json())
-    //   .then((data) => {
-    //     console.log(data);
-    //     dispatch(getSeriesInfo(data));
-    //   });
   }, [media]);
 
   useEffect(() => {

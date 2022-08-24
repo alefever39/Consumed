@@ -18,7 +18,6 @@ const mediaSlice = createSlice({
       state.media = action.payload;
     },
     deleteMedia: (state, action) => {
-      console.log("in delete media", state.media);
       state.media = state.media.filter(
         (medium) => medium.id !== action.payload
       );

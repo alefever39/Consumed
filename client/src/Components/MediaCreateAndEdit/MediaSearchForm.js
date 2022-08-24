@@ -178,7 +178,6 @@ function MediaSearchForm({ origin }) {
         <Flex gap={6} padding={6} wrap="wrap" justify="space-around">
           {results ? (
             results.map((medium) => {
-              console.log(medium);
               return (
                 <SimplifiedMediaCard
                   removeMediaFromResults={removeMediaFromResults}

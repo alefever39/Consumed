@@ -73,7 +73,6 @@ function MediaDetails({ media, handleCancelClick, initialRef }) {
     fetch(`/media/${media.medium.id}/media_series`)
       .then((response) => response.json())
       .then((data) => {
-        console.log(data);
         dispatch(getSeriesInfo(data));
       })
       .catch((error) => window.alert(error));
