@@ -81,7 +81,6 @@ function MediaContainer({ origin }) {
 
   if (search) {
     displayMedia = displayMedia.filter((medium) => {
-      console.log(medium);
       return (
         medium.medium.title.toLowerCase().includes(search.toLowerCase()) ||
         medium.consumed.toLowerCase() === search.toLowerCase()

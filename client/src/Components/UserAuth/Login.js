@@ -45,7 +45,6 @@ function Login() {
         if (data.errors) {
           setErrors(data.errors);
         } else {
-          console.log("in the user fetch", data);
           dispatch(getUser(data));
           history.push("/home");
         }

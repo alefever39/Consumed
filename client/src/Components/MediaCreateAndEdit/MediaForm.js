@@ -70,9 +70,15 @@ function MediaForm({ origin }) {
       initialFormData.series_title = editInfo.mediaSeries.series.title;
       initialFormData.media_number = editInfo.mediaSeries.number;
       initialFormData.season_number = editInfo.mediaSeries.season.number;
+
       if (editInfo.mediaSeries.season.season_exists) {
         initialExistState.season = true;
       }
+    } else {
+      initialExistState.series = false;
+      initialExistState.season = false;
+      initialFormData.media_number = 1;
+      initialFormData.season_number = 1;
     }
   } else {
     initialExistState = {
@@ -129,7 +135,6 @@ function MediaForm({ origin }) {
   }
 
   function handleNumberInputChange(num, label, min) {
-    console.log(min);
     let number;
     if (num === "") {
       number = 0;
@@ -152,7 +157,6 @@ function MediaForm({ origin }) {
       season_exists: seasonExists,
       description: formData.description.split(/\r?\n/).join("\n"),
     };
-    console.log(sendForm);
     fetch("/media", {
       method: "POST",
       headers: {
@@ -180,8 +184,6 @@ function MediaForm({ origin }) {
     const creator_ids = editInfo.media.creators
       .map((creator) => creator.id)
       .join(", ");
-
-    console.log(editInfo);
 
     const sendForm = {
       ...formData,
@@ -212,7 +214,6 @@ function MediaForm({ origin }) {
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log(data);
         if (data.errors) {
           setErrors(data.errors);
         } else {
@@ -339,9 +340,9 @@ function MediaForm({ origin }) {
               <CustomNumberInput
                 onChange={handleNumberChange}
                 onType={handleNumberInputChange}
-                value={formData.year}
+                value={parseInt(formData.year)}
                 name="year"
-                defaultValue={formData.year}
+                defaultValue={parseInt(formData.year)}
                 min={"none"}
               ></CustomNumberInput>
             </Flex>
@@ -350,7 +351,7 @@ function MediaForm({ origin }) {
             <Flex align="center" justify={"space-between"} pt="10px">
               <FormLabel fontSize="sm">Month</FormLabel>
               <Select
-                value={formData.month}
+                value={parseInt(formData.month)}
                 onChange={(e) => handleInputChange(e)}
                 name="month"
                 placeholder="Not Applicable"
@@ -374,7 +375,7 @@ function MediaForm({ origin }) {
             <Flex align="center" justify={"space-between"} pt="10px">
               <FormLabel fontSize="sm">Date</FormLabel>
               <Select
-                value={formData.date}
+                value={parseInt(formData.date)}
                 onChange={(e) => handleInputChange(e)}
                 name="date"
               >

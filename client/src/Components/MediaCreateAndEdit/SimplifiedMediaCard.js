@@ -18,8 +18,6 @@ import { consumedTextColor } from "../HelperFunctions/formattingFunctions";
 import { useSelector } from "react-redux";
 
 function SimplifiedMediaCard({ media, removeMediaFromResults }) {
-  console.log(media);
-
   const {
     isOpen: isDetailsOpen,
     onOpen: onDetailsOpen,
