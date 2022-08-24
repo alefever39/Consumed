@@ -1,9 +1,11 @@
 require "open-uri"
 require "net/http"
-require "concurrent"
 
 class ExternalApi < ApplicationRecord
   include Concurrent::Async
+
+  IMDB_API_KEY = ENV["IMDB_KEY"]
+  GOOGLE_BOOKS_API_KEY = ENV["GOOGLE_BOOKS_KEY"]
 
   def self.budb_get_all
     url = "https://consumed-media-backup-database.herokuapp.com/external_apis"

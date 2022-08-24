@@ -182,6 +182,7 @@ MediaType.create(media_type: "youtube video")
 MediaType.create(media_type: "video game")
 MediaType.create(media_type: "board game")
 MediaType.create(media_type: "blog")
+MediaType.create(media_type: "magazine")
 
 #### Get first id for title matching search term
 
@@ -190,6 +191,12 @@ backup_database_responses.map do |response|
   if response["api"] == "imdb"
     params_hash =
       ExternalApi.convert_imdb_response_to_params_hash(
+        eval(response["response"]),
+        response["title_id"]
+      )
+  elsif response["api"] == "google_books"
+    params_hash =
+      ExternalApi.convert_google_books_response_to_params_hash(
         eval(response["response"]),
         response["title_id"]
       )

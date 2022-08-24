@@ -48,7 +48,34 @@ function MediaContainer({ origin }) {
     if (origin === "home") {
       displayMedia = media.filter((medium) => medium.consumed === "consuming");
     } else {
-      displayMedia = media;
+      displayMedia = [...media];
+      displayMedia.sort((a, b) => {
+        let aValue;
+        let bValue;
+        if (a.consumed === "consuming") {
+          aValue = 0;
+        } else if (a.consumed === "not consumed") {
+          aValue = 1;
+        } else if (a.consumed === "consumed") {
+          aValue = 3;
+        }
+
+        if (b.consumed === "consuming") {
+          bValue = 0;
+        } else if (b.consumed === "not consumed") {
+          bValue = 1;
+        } else if (b.consumed === "consumed") {
+          bValue = 3;
+        }
+
+        if (aValue === bValue) {
+          return 0;
+        } else if (aValue < bValue) {
+          return -1;
+        } else {
+          return 1;
+        }
+      });
     }
   }
 

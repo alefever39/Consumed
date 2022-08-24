@@ -1,5 +1,3 @@
-require "concurrent"
-
 class ExternalApiController < ApplicationController
   include Concurrent::Async
   skip_before_action :authorize, only: [:imdb]
