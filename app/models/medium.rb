@@ -373,4 +373,129 @@ class Medium < ApplicationRecord
 
     media_user
   end
+
+  def self.create_media_and_related_objects_without_exceptions(
+    params_object,
+    user
+  )
+    $records_to_add = []
+    ######### find media_type
+    media_type_search =
+      MediaType.find_by(media_type: params_object[:media_type])
+    if media_type_search
+      media_type = media_type_search
+    else
+      media_type = MediaType.create(media_type: params_object[:media_type])
+    end
+
+    ######### build release date
+    release_date =
+      "#{params_object[:year]}-#{params_object[:month].to_s.rjust(2, "0")}-#{params_object[:date].to_s.rjust(2, "0")}"
+
+    ######### create media if it doesn't exist
+    media_exists = Medium.find_by(title: params_object[:title])
+    if media_exists
+      medium = media_exists
+    else
+      medium =
+        Medium.create(
+          {
+            title: params_object[:title],
+            description: params_object[:description],
+            release_date: release_date,
+            media_type: media_type,
+            image: params_object[:image],
+            external_id: params_object[:external_id]
+          }
+        )
+
+      $records_to_add = [medium] + $records_to_add
+    end
+
+    ######### create media_user
+    media_user =
+      MediaUser.create(
+        rating: params_object[:rating],
+        review: params_object[:review],
+        site_consumed: params_object[:site_consumed],
+        consumed: params_object[:consumed],
+        notes: params_object[:notes],
+        medium: medium,
+        user: user
+      )
+    $records_to_add = [media_user] + $records_to_add
+
+    if params_object[:creator] != nil && params_object[:creator] != ""
+      byebug
+      ######### split creator string
+      creators_strings =
+        params_object[:creator].split(",").map { |creator| creator.strip }
+
+      ######### create creators if they don't exist
+      creators_objects =
+        creators_strings.map do |creator|
+          creator_to_add = Creator.find_by(name: creator)
+          if creator_to_add
+            creator = creator_to_add
+          else
+            creator = Creator.create(name: creator)
+          end
+          creator
+        end
+
+      ######### create media_creators
+      creators_objects.map do |creator|
+        MediaCreator.create(medium: medium, creator: creator)
+      end
+    end
+
+    ######### if there is a series, create series if it doesn't exist
+    if (params_object[:series_exists])
+      existing_series = Series.find_by(title: params_object[:series_title])
+      if existing_series
+        series = existing_series
+      else
+        series = Series.create(title: params_object[:series_title])
+        $records_to_add = [series] + $records_to_add
+      end
+
+      ######### 1f there is a season, create season 1f it doesn't exist. 1f there isn't a season, but there is a series. Create season with number of 1.
+      existing_season =
+        Season.find_by(number: params_object[:season_number], series: series)
+      if existing_season
+        season = existing_season
+      else
+        season =
+          Season.create(
+            number: params_object[:season_number],
+            series: series,
+            season_exists: params_object[:season_exists]
+          )
+        $records_to_add = [season] + $records_to_add
+      end
+
+      ######### create media_season
+      existing_media_season =
+        MediaSeason.find_by(
+          number: params_object[:media_number],
+          season: season,
+          medium: medium
+        )
+      if existing_media_season
+        media_season = existing_media_season
+      else
+        media_season =
+          MediaSeason.create(
+            number: params_object[:media_number],
+            season: season,
+            medium: medium
+          )
+        $records_to_add = [media_season] + $records_to_add
+      end
+    end
+
+    $records_to_add = []
+
+    media_user
+  end
 end
