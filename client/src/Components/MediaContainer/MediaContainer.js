@@ -111,7 +111,7 @@ function MediaContainer({ origin }) {
         pb="5px"
       >
         {origin === "home"
-          ? "Here's what your currently consuming"
+          ? "Here's what you're currently consuming"
           : "All Your Media"}
       </Heading>
       <FormControl id="seach">
