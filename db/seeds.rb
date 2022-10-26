@@ -184,7 +184,7 @@ MediaType.create(media_type: "board game")
 MediaType.create(media_type: "blog")
 MediaType.create(media_type: "magazine")
 
-#### Get first id for title matching search term
+puts "Seeding Media"
 
 backup_database_responses = ExternalApi.budb_get_all
 backup_database_responses.map do |response|
@@ -203,3 +203,5 @@ backup_database_responses.map do |response|
   end
   Medium.create_media_and_related_objects_without_exceptions(params_hash, user)
 end
+
+puts "Done Seeding!"
