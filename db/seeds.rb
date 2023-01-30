@@ -184,24 +184,24 @@ MediaType.create(media_type: "board game")
 MediaType.create(media_type: "blog")
 MediaType.create(media_type: "magazine")
 
-puts "Seeding Media"
+# puts "Seeding Media"
 
-backup_database_responses = ExternalApi.budb_get_all
-backup_database_responses.map do |response|
-  if response["api"] == "imdb"
-    params_hash =
-      ExternalApi.convert_imdb_response_to_params_hash(
-        eval(response["response"]),
-        response["title_id"]
-      )
-  elsif response["api"] == "google_books"
-    params_hash =
-      ExternalApi.convert_google_books_response_to_params_hash(
-        eval(response["response"]),
-        response["title_id"]
-      )
-  end
-  Medium.create_media_and_related_objects_without_exceptions(params_hash, user)
-end
+# backup_database_responses = ExternalApi.budb_get_all
+# backup_database_responses.map do |response|
+#   if response["api"] == "imdb"
+#     params_hash =
+#       ExternalApi.convert_imdb_response_to_params_hash(
+#         eval(response["response"]),
+#         response["title_id"]
+#       )
+#   elsif response["api"] == "google_books"
+#     params_hash =
+#       ExternalApi.convert_google_books_response_to_params_hash(
+#         eval(response["response"]),
+#         response["title_id"]
+#       )
+#   end
+#   Medium.create_media_and_related_objects_without_exceptions(params_hash, user)
+# end
 
 puts "Done Seeding!"
